@@ -1,1 +1,1 @@
-added this file and have officially comitted
+added this file and have officially committed
