@@ -53,4 +53,20 @@ public class ChessPiece {
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         throw new RuntimeException("Not implemented");
     }
+
+    public  String toString() {
+        return String.format("(%s, %s)", this.pieceType.toString(), this.pieceColor.toString());
+    }
+
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChessPiece that = (ChessPiece) o;
+        return this.pieceType.equals(that.pieceType);
+    }
+
+    public int hashCode() {
+        return this.pieceType.hashCode();
+    }
+
 }
