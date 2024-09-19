@@ -33,6 +33,14 @@ public class ChessPosition {
         return this.col;
     }
 
+    @Override
+    public String toString() {
+        return
+                "(" + row +
+                "," + col +
+                "),";
+    }
+
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

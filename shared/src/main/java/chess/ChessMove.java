@@ -45,8 +45,13 @@ public class ChessMove {
         return this.pieceType;
     }
 
-    public int[][] move (int num_moves){
-        return new int[0][0];
+    @Override
+    public String toString() {
+        return "ChessMove{" +
+                "start=" + start +
+                ", end=" + end +
+                ", pieceType=" + pieceType +
+                "}\n";
     }
 
     @Override

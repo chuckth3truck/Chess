@@ -52,22 +52,82 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
+        var moves = new ArrayList<ChessMove>();
 
-        ChessPiece piece = board.getPiece(myPosition);
-//        Rule rule = switch (getPieceType()) {
-//            case BISHOP -> new Rule(true, new int[][]{{1, -1}, {-1, 1}, {-1, -1}, {1, 1}});
-//            case ROOK   -> new Rule(true, new int[][]{{1, 0}, {-1, 0}, {0, 1}, {0, -1}});
-//            case KNIGHT -> new Rule(false, new int[][]{{2, 1}, {2, -1}, {-2, 1}});
-//            case QUEEN  -> new Rule(true, new int[][]{{1, -1}, {-1, 1}, {-1, -1}, {1, 1}});
-//            case KING   -> new Rule(false, new int[][]{{1, -1}, {-1, 1}, {-1, -1}, {1, 1}});
-//            default -> null;
-//        };
+        Rule rule = switch (getPieceType()) {
+            case BISHOP -> new Rule(true, new int[][]{{1, -1}, {-1, 1}, {-1, -1}, {1, 1}});
+            case ROOK   -> new Rule(true, new int[][]{{1, 0}, {-1, 0}, {0, 1}, {0, -1}});
+            case KNIGHT -> new Rule(false, new int[][]{{2, 1}, {2, -1}, {-2, 1}, {-2, -1}, {-1, 2}, {-1, -2}, {1, 2}, {1, -2}});
+            case QUEEN  -> new Rule(true, new int[][]{{1, -1}, {-1, 1}, {-1, -1}, {1, 1}});
+            case KING   -> new Rule(false, new int[][]{{1, -1}, {-1, 1}, {-1, -1}, {1, 1}});
+            default -> null;
+        };
 //
-//        return rule.getMoves(board, pos);
+        if (rule == null){
+            return null;
+        }
+        return rule.getMoves(board, myPosition);
 
 
-        return null;
+//        return moves;
 
+    }
+
+    public class Rule {
+
+        private boolean multiMove;
+        private final int[][] moves;
+        public Rule (boolean multiMove, int[][] moves){
+            this.multiMove = multiMove;
+            this.moves = moves;
+        }
+        public boolean can_move(int[] move, ChessBoard board, ChessPosition pos){
+            if (pos.getRow()+move[0] <= 0 || pos.getRow()+move[0] >= 9 || pos.getColumn()+move[1] <=0 || pos.getColumn()+move[1] >= 9){
+                this.multiMove = false;
+                return false;
+            }
+            ChessPosition new_pos = new ChessPosition(pos.getRow()+move[0], pos.getColumn()+move[1]);
+            ChessPiece new_piece = board.getPiece(new_pos);
+            if (new_piece == null){
+                return true;
+            }
+            this.multiMove = false;
+            return new_piece.pieceColor != pieceColor;
+        }
+
+        public void addMove(int[] move, ChessBoard board, ChessPosition old_pos, ChessPosition pos, ArrayList<ChessMove> moves){
+
+            if (can_move(move, board, pos)){
+                ChessPosition new_pos = new ChessPosition(pos.getRow()+move[0], pos.getColumn()+move[1]);
+                ChessMove new_move = new ChessMove(old_pos, new_pos, null);
+                board.addPiece(new_pos, board.getPiece(pos));
+                board.addPiece(pos, null);
+                moves.add(new_move);
+                if (multiMove) {
+                    addMove(move, board, old_pos,  new_pos, moves);
+                }
+                else return;
+            }
+            else return;
+
+        }
+
+        public Collection<ChessMove> getMoves(ChessBoard board, ChessPosition pos) {
+            var moves = new ArrayList<ChessMove>();
+            if (this.multiMove) {
+                for (int[] move : this.moves){
+                    multiMove = true;
+                    addMove(move, board, pos, pos, moves);
+                }
+            }
+            else {
+                for (int[] move : this.moves){
+                    addMove(move, board, pos, pos, moves);
+                }
+            }
+
+            return moves;
+        }
     }
 
     public  String toString() {
