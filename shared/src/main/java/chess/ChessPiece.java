@@ -53,22 +53,26 @@ public class ChessPiece {
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
 
+
         Rule rule = switch (getPieceType()) {
             case BISHOP -> new Rule(true, new int[][]{{1, -1}, {-1, 1}, {-1, -1}, {1, 1}});
+
             case ROOK   -> new Rule(true, new int[][]{{1, 0}, {-1, 0}, {0, 1}, {0, -1}});
-            case KNIGHT -> new Rule(false, new int[][]{{2, 1}, {2, -1}, {-2, 1}, {-2, -1}, {-1, 2}, {-1, -2}, {1, 2}, {1, -2}});
-            case QUEEN  -> new Rule(true, new int[][]{{1, -1}, {-1, 1}, {-1, -1}, {1, 1}, {1, 0}, {-1, 0}, {0, 1}, {0, -1}});
-            case KING   -> new Rule(false, new int[][]{{1, -1}, {-1, 1}, {-1, -1}, {1, 1}, {1, 0}, {-1, 0}, {0, 1}, {0, -1}});
-            default -> null;
+
+            case KNIGHT -> new Rule(false, new int[][]{{2, 1}, {2, -1}, {-2, 1}, {-2, -1},
+                                                                {-1, 2}, {-1, -2}, {1, 2}, {1, -2}});
+
+            case QUEEN  -> new Rule(true, new int[][]{{1, -1}, {-1, 1}, {-1, -1}, {1, 1},
+                                                                {1, 0}, {-1, 0}, {0, 1}, {0, -1}});
+
+            case KING   -> new Rule(false, new int[][]{{1, -1}, {-1, 1}, {-1, -1}, {1, 1},
+                                                                {1, 0}, {-1, 0}, {0, 1}, {0, -1}});
+
+            case PAWN -> new pawnRule(false, new int[][]{{0,1},{0,-1}, {1, -1}, {-1, 1}, {-1, -1}, {1, 1}});
         };
-//
-        if (rule == null){
-            return null;
-        }
+
+
         return rule.getMoves(board, myPosition);
-
-
-//        return moves;
 
     }
 
@@ -105,10 +109,7 @@ public class ChessPiece {
                 if (multiMove) {
                     addMove(move, board, old_pos,  new_pos, moves);
                 }
-                else return;
             }
-            else return;
-
         }
 
         public Collection<ChessMove> getMoves(ChessBoard board, ChessPosition pos) {
@@ -127,6 +128,80 @@ public class ChessPiece {
 
             return moves;
         }
+    }
+
+    public class pawnRule extends Rule{
+        private final int[][] moves;
+        public pawnRule(boolean multiMove, int[][] moves) {
+            super(multiMove, moves);
+            this.moves = moves;
+        }
+
+        @Override
+        public boolean can_move(int[] move, ChessBoard board, ChessPosition pos) {
+            if (pos.getRow()+move[1] <= 0 || pos.getRow()+move[1] >= 9 || pos.getColumn()+move[0] <=0 || pos.getColumn()+move[0] >= 9){
+                return false;
+            }
+            if (move[1] == 1 && pieceColor == ChessGame.TeamColor.BLACK){
+                return false;
+            }
+            if (move[1] == -1 && pieceColor == ChessGame.TeamColor.WHITE){
+                return false;
+            }
+            ChessPosition new_pos = new ChessPosition(pos.getRow()+move[1], pos.getColumn()+move[0]);
+            ChessPiece new_piece = board.getPiece(new_pos);
+
+
+            if ((new_piece != null) && (move[0] != 0 && new_piece.pieceColor != pieceColor)){
+                return true;
+            }
+            else if ((new_piece == null) && (move[0] != 0)) {
+                    return false;
+            }
+
+
+            return new_piece == null;
+
+        }
+
+        public boolean checkPromotion (ChessBoard board, ChessPosition pos){
+            if (board.getPiece(pos) == null){
+                return false;
+            }
+            return (pos.getRow() == 7 && board.getPiece(pos).pieceColor == ChessGame.TeamColor.WHITE) ||
+                    (pos.getRow() == 2 && board.getPiece(pos).pieceColor == ChessGame.TeamColor.BLACK);
+        }
+
+        public void addMove (int[] move, ChessBoard board, ChessPosition old_pos, ChessPosition pos, ArrayList<ChessMove> moves){
+            if (can_move(move, board, pos)){
+                ChessPosition new_pos = new ChessPosition(pos.getRow()+move[1], pos.getColumn()+move[0]);
+                if (checkPromotion(board, pos)){
+                    moves.add(new ChessMove(old_pos, new_pos, PieceType.KNIGHT));
+                    moves.add(new ChessMove(old_pos, new_pos, PieceType.BISHOP));
+                    moves.add(new ChessMove(old_pos, new_pos, PieceType.QUEEN));
+                    moves.add(new ChessMove(old_pos, new_pos, PieceType.ROOK));
+                    return;
+                }
+                ChessMove new_move = new ChessMove(old_pos, new_pos, null);
+                board.addPiece(new_pos, board.getPiece(pos));
+                board.addPiece(pos, null);
+                moves.add(new_move);
+                if ((pos.getRow() == 2 && board.getPiece(new_pos).pieceColor == ChessGame.TeamColor.WHITE)||
+                        (pos.getRow() == 7 && board.getPiece(new_pos).pieceColor == ChessGame.TeamColor.BLACK)){
+                    addMove(move, board, old_pos, new_pos, moves);
+
+                }
+            }
+        }
+
+        public Collection<ChessMove> getMoves(ChessBoard board, ChessPosition pos) {
+            var piece_moves = new ArrayList<ChessMove>();
+            for (int[] move : this.moves){
+                addMove(move, board, pos, pos, piece_moves);
+            }
+            return piece_moves;
+        }
+
     }
 
     public  String toString() {
