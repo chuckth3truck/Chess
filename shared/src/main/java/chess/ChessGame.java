@@ -1,6 +1,7 @@
 package chess;
 
 import java.time.temporal.TemporalQueries;
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -48,7 +49,8 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        throw new RuntimeException("Not implemented");
+        var moves = new ArrayList<ChessMove>();
+        return moves;
     }
 
     /**
