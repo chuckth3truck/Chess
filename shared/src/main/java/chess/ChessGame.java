@@ -82,6 +82,29 @@ public class ChessGame {
 
     }
 
+    public ChessPosition findKing(TeamColor teamColor){
+        ChessPosition king_pos;
+
+        for (int row=0; row<8; row++) {
+            for (int col = 0; col < 8; col++) {
+                ChessPiece piece = board.getPiece(new ChessPosition(row + 1, col + 1));
+                if (piece != null && piece.getPieceType() == ChessPiece.PieceType.KING
+                        && piece.getTeamColor() == teamColor) {
+                    king_pos = new ChessPosition(row + 1, col + 1);
+                    return king_pos;
+                }
+            }
+        }
+        return null;
+    }
+
+    public boolean inWay(ChessPosition pos){
+
+
+        return false;
+    }
+
+
     /**
      * Determines if the given team is in check
      *
@@ -89,36 +112,24 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        ChessPosition king_pos;
+        ChessPosition king_pos = findKing(teamColor);
 
-
-        for (int row=0; row<8; row++){
-            for (int col=0; col<8; col++) {
-                ChessPiece piece = board.getPiece(new ChessPosition(row+1, col+1));
-                if (piece != null && piece.getPieceType() == ChessPiece.PieceType.KING
-                        && piece.getTeamColor() == teamColor) {
-                    king_pos = new ChessPosition(row+1, col+1);
-                    for (int i=0; i<8; i++){
-                        for (int j = 0; j <8; j++) {
-                            ChessPiece enemyPiece = board.getPiece(new ChessPosition(i+1, j+1));
-                            if (enemyPiece != null && enemyPiece.getTeamColor() != teamColor) {
-                                var moves = piece.pieceMoves(board, new ChessPosition(i+1, j+1));
-                                for(ChessMove move: moves){
-                                    if (move.getEndPosition() == king_pos){
-                                        return false;
-                                    }
-                                }
+        if (king_pos != null) {
+            for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < 8; j++) {
+                    ChessPiece enemyPiece = board.getPiece(new ChessPosition(i + 1, j + 1));
+                    if (enemyPiece != null && enemyPiece.getTeamColor() != teamColor) {
+                        var moves = enemyPiece.pieceMoves(board, new ChessPosition(i + 1, j + 1));
+                        for (ChessMove move : moves) {
+                            if (move.getEndPosition() == king_pos) {
+                                return true;
                             }
                         }
                     }
                 }
-                else {
-                    break;
-                }
             }
         }
-
-        return true;
+        return false;
     }
 
     /**
@@ -129,19 +140,12 @@ public class ChessGame {
      */
     public boolean isInCheckmate(TeamColor teamColor) {
         if (isInCheck(teamColor)){
-            ChessPosition king_pos;
-
-            for (int row=0; row<8; row++) {
-                for (int col = 0; col < 8; col++) {
-                    ChessPiece piece = board.getPiece(new ChessPosition(row+1, col+1));
-                    if (piece != null && piece.getPieceType() == ChessPiece.PieceType.KING
-                            && piece.getTeamColor() == teamColor) {
-                        king_pos = new ChessPosition(row+1, col+1);
-                        var kingMoves = piece.pieceMoves(board, king_pos);
-                        if (kingMoves.isEmpty()){
-                            return false;
-                        }
-                    }
+            ChessPosition king_pos = findKing(teamColor);
+            if (king_pos != null) {
+                ChessPiece piece = board.getPiece(king_pos);
+                var kingMoves = piece.pieceMoves(board, king_pos);
+                if (kingMoves.isEmpty()) {
+                    return false;
                 }
             }
         }
