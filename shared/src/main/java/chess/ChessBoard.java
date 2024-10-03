@@ -9,7 +9,7 @@ import java.util.Arrays;
  * signature of the existing methods.
  */
 public class ChessBoard {
-    private final ChessPiece[][] board;
+    private ChessPiece[][] board;
 
     public ChessBoard() {
         board = new ChessPiece[8][8];
@@ -74,6 +74,25 @@ public class ChessBoard {
             ret.append("\n");
         }
         return ret.toString();
+    }
+
+    public ChessBoard deepCopy() {
+            ChessBoard copy = new ChessBoard();
+            copy.board = new ChessPiece[8][8];
+            for (int row=0; row<8; row++) {
+                for (int col = 0; col < 8; col++) {
+                    ChessPosition pos = new ChessPosition(row+1, col+1);
+                    if (this.board[row][col] != null){
+                        ChessPiece piece = this.board[row][col];
+                        copy.addPiece(pos, new ChessPiece(piece.getTeamColor(), piece.getPieceType()));
+                    }
+                    else{
+                        copy.addPiece(pos, null);
+                    }
+                }
+            }
+            return copy;
+
     }
 
     public boolean equals(Object o) {

@@ -66,7 +66,8 @@ public class ChessPiece {
             case PAWN -> new pawnRule(false, new int[][]{{1, 0}, {-1, 0}, {1, -1}, {1, 1}, {-1, 1}, {-1, -1}});
         };
 
-        return rule.getMoves(board, myPosition);
+        ChessBoard boardCopy = board.deepCopy();
+        return rule.getMoves(boardCopy, myPosition);
 
     }
 
