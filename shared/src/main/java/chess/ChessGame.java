@@ -81,16 +81,36 @@ public class ChessGame {
         ChessPiece piece = board.getPiece(current_pos);
         ChessPosition end_pos = move.getEndPosition();
         ChessPiece end_piece = board.getPiece(end_pos);
-
+        if (piece == null){
+            throw new InvalidMoveException("there is not piece there");
+        }
         if (piece.getTeamColor() != teamTurn){
             throw new InvalidMoveException("Piece color != team turn");
-        } else if (end_piece!=null && end_piece.getTeamColor()==piece.getTeamColor()) {
+        }
+        if (end_piece!=null && end_piece.getTeamColor()==piece.getTeamColor()) {
             throw new InvalidMoveException("Cannot move to occupied space of same team");
         }
+        if(validMoves(move.getStartPosition()).isEmpty()){
+            throw new InvalidMoveException("This piece has no valid moves");
+        }
+        if(!validMoves(move.getStartPosition()).contains(move)){
+            throw new InvalidMoveException("Cant move there");
+        }
 
-
-        board.addPiece(end_pos, piece);
+        if (move.getPromotionPiece() != null){
+            board.addPiece(end_pos, new ChessPiece(piece.getTeamColor(), move.getPromotionPiece()));
+        }
+        else {
+            board.addPiece(end_pos, piece);
+        }
+//        board.addPiece(end_pos, piece);
         board.addPiece(current_pos, null);
+        if (teamTurn == TeamColor.WHITE){
+            teamTurn = TeamColor.BLACK;
+        }
+        else{
+            teamTurn = TeamColor.WHITE;
+        }
 
     }
 
