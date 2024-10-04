@@ -185,12 +185,19 @@ public class ChessGame {
      */
     public boolean isInCheckmate(TeamColor teamColor) {
         if (isInCheck(teamColor)){
-            ChessPosition king_pos = findKing(teamColor, this.board);
-            if (king_pos != null) {
-                ChessPiece piece = board.getPiece(king_pos);
-                var kingMoves = piece.pieceMoves(board, king_pos);
-                return !kingMoves.isEmpty();
+            for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < 8; j++) {
+                    ChessPiece friendPiece = board.getPiece(new ChessPosition(i + 1, j + 1));
+                    if (friendPiece != null && friendPiece.getTeamColor() == teamColor){
+                         var moves = validMoves(new ChessPosition(i + 1, j + 1));
+                        if (!moves.isEmpty()){
+                            return false;
+                        }
+                    }
+
+                }
             }
+            return true;
         }
         return false;
     }
@@ -203,7 +210,17 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                ChessPiece friendPiece = board.getPiece(new ChessPosition(i + 1, j + 1));
+                if (friendPiece != null && friendPiece.getTeamColor() == teamColor){
+                    if(!validMoves(new ChessPosition(i + 1, j + 1)).isEmpty()){
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
     }
 
     /**
