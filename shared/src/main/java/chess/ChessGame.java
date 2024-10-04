@@ -94,7 +94,7 @@ public class ChessGame {
 
     }
 
-    public ChessPosition findKing(TeamColor teamColor){
+    public ChessPosition findKing(TeamColor teamColor, ChessBoard board ){
         ChessPosition king_pos;
 
         for (int row=0; row<8; row++) {
@@ -126,7 +126,7 @@ public class ChessGame {
     }
 
     public boolean isBoardInCheck(TeamColor teamColor, ChessBoard board){
-        ChessPosition king_pos = findKing(teamColor);
+        ChessPosition king_pos = findKing(teamColor, board);
 
         if (king_pos != null) {
             for (int i = 0; i < 8; i++) {
@@ -165,7 +165,7 @@ public class ChessGame {
      */
     public boolean isInCheckmate(TeamColor teamColor) {
         if (isInCheck(teamColor)){
-            ChessPosition king_pos = findKing(teamColor);
+            ChessPosition king_pos = findKing(teamColor, this.board);
             if (king_pos != null) {
                 ChessPiece piece = board.getPiece(king_pos);
                 var kingMoves = piece.pieceMoves(board, king_pos);
