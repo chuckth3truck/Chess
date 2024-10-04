@@ -1,5 +1,6 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -51,12 +52,35 @@ public class ChessGame {
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         ChessPiece piece = board.getPiece(startPosition);
-        if (piece != null){
-            return piece.pieceMoves(this.board, startPosition);
+        TeamColor pieceColor = piece.getTeamColor();
+        var validMoves = new ArrayList<ChessMove>();
 
+        if (piece.getPieceType()== ChessPiece.PieceType.KING){
+            for (ChessMove move: piece.pieceMoves(this.board, startPosition)){
+                ChessBoard boardCopy = this.board.deepCopy();
+                if (boardCopy.getPiece(move.getEndPosition()) != null &&
+                        boardCopy.getPiece(move.getEndPosition()).getTeamColor() != pieceColor){
+                    var kingMoves =  new ArrayList<ChessMove>();
+                    kingMoves.add(move);
+                    return kingMoves;
+            }}}
+
+        else {
+
+            for (ChessMove move : piece.pieceMoves(this.board, startPosition)) {
+                ChessBoard boardCopy = this.board.deepCopy();
+                boardCopy.addPiece(move.getEndPosition(), piece);
+                boardCopy.addPiece(move.getStartPosition(), null);
+                if (!isBoardInCheck(pieceColor, boardCopy)) {
+                    validMoves.add(move);
+                }
+            }
         }
-        return null;
+
+        return validMoves;
     }
+    //    loop through piece and all their moves if the move is made and the board is inchecl then that piece cannot move
+
 
     /**
      * Makes a move in a chess game
@@ -97,10 +121,40 @@ public class ChessGame {
         }
         return null;
     }
+//    loop every feiendly piece and all their oves if the move is made and the board is inchecl then that piece cannot move
 
     public boolean inWay(ChessPosition pos){
+        ChessBoard boardCopy = this.board.deepCopy();
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (boardCopy.getPiece(new ChessPosition(i + 1, j + 1)).getTeamColor() != teamTurn &&
+                        boardCopy.getPiece(new ChessPosition(i + 1, j + 1)).getPieceType() != ChessPiece.PieceType.KING){
+                    boardCopy.addPiece(new ChessPosition(i + 1, j + 1), null);
+                }
+            }
+        }
 
+        return false;
+    }
 
+    public boolean isBoardInCheck(TeamColor teamColor, ChessBoard board){
+        ChessPosition king_pos = findKing(teamColor);
+
+        if (king_pos != null) {
+            for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < 8; j++) {
+                    ChessPiece enemyPiece = board.getPiece(new ChessPosition(i + 1, j + 1));
+                    if (enemyPiece != null && enemyPiece.getTeamColor() != teamColor) {
+                        var moves = enemyPiece.pieceMoves(board, new ChessPosition(i + 1, j + 1));
+                        for (ChessMove move : moves) {
+                            if (move.getEndPosition().getColumn() == king_pos.getColumn() && move.getEndPosition().getRow() == king_pos.getRow()) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
         return false;
     }
 
@@ -112,24 +166,7 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        ChessPosition king_pos = findKing(teamColor);
-
-        if (king_pos != null) {
-            for (int i = 0; i < 8; i++) {
-                for (int j = 0; j < 8; j++) {
-                    ChessPiece enemyPiece = board.getPiece(new ChessPosition(i + 1, j + 1));
-                    if (enemyPiece != null && enemyPiece.getTeamColor() != teamColor) {
-                        var moves = enemyPiece.pieceMoves(board, new ChessPosition(i + 1, j + 1));
-                        for (ChessMove move : moves) {
-                            if (move.getEndPosition() == king_pos) {
-                                return true;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return false;
+        return isBoardInCheck(teamColor, this.board);
     }
 
     /**
@@ -144,12 +181,10 @@ public class ChessGame {
             if (king_pos != null) {
                 ChessPiece piece = board.getPiece(king_pos);
                 var kingMoves = piece.pieceMoves(board, king_pos);
-                if (kingMoves.isEmpty()) {
-                    return false;
-                }
+                return !kingMoves.isEmpty();
             }
         }
-        return true;
+        return false;
     }
 
     /**
