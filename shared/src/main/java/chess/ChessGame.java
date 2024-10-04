@@ -55,17 +55,6 @@ public class ChessGame {
         TeamColor pieceColor = piece.getTeamColor();
         var validMoves = new ArrayList<ChessMove>();
 
-        if (piece.getPieceType()== ChessPiece.PieceType.KING){
-            for (ChessMove move: piece.pieceMoves(this.board, startPosition)){
-                ChessBoard boardCopy = this.board.deepCopy();
-                if (boardCopy.getPiece(move.getEndPosition()) != null &&
-                        boardCopy.getPiece(move.getEndPosition()).getTeamColor() != pieceColor){
-                    var kingMoves =  new ArrayList<ChessMove>();
-                    kingMoves.add(move);
-                    return kingMoves;
-            }}}
-
-        else {
 
             for (ChessMove move : piece.pieceMoves(this.board, startPosition)) {
                 ChessBoard boardCopy = this.board.deepCopy();
@@ -75,7 +64,6 @@ public class ChessGame {
                     validMoves.add(move);
                 }
             }
-        }
 
         return validMoves;
     }

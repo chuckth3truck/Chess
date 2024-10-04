@@ -199,7 +199,28 @@ public class ChessPiece {
     }
 
     public  String toString() {
-        return String.format("(%s, %s)", this.pieceType.toString(), this.pieceColor.toString());
+        if (pieceColor == ChessGame.TeamColor.WHITE){
+            String name = switch (getPieceType()){
+                case ROOK -> "R";
+                case KNIGHT -> "N";
+                case BISHOP -> "B";
+                case KING -> "K";
+                case QUEEN -> "Q";
+                case PAWN -> "P";
+            };
+            return name;
+        }
+        else{
+            String name = switch (getPieceType()){
+                case ROOK -> "r";
+                case KNIGHT -> "n";
+                case BISHOP -> "b";
+                case KING -> "k";
+                case QUEEN -> "q";
+                case PAWN -> "p";
+            };
+            return name;
+        }
     }
 
     public boolean equals(Object o) {
