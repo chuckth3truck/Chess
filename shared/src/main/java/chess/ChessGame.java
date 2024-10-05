@@ -103,7 +103,6 @@ public class ChessGame {
         else {
             board.addPiece(end_pos, piece);
         }
-//        board.addPiece(end_pos, piece);
         board.addPiece(current_pos, null);
         if (teamTurn == TeamColor.WHITE){
             teamTurn = TeamColor.BLACK;
@@ -128,21 +127,6 @@ public class ChessGame {
             }
         }
         return null;
-    }
-//    loop every feiendly piece and all their oves if the move is made and the board is inchecl then that piece cannot move
-
-    public boolean inWay(ChessPosition pos){
-        ChessBoard boardCopy = this.board.deepCopy();
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                if (boardCopy.getPiece(new ChessPosition(i + 1, j + 1)).getTeamColor() != teamTurn &&
-                        boardCopy.getPiece(new ChessPosition(i + 1, j + 1)).getPieceType() != ChessPiece.PieceType.KING){
-                    boardCopy.addPiece(new ChessPosition(i + 1, j + 1), null);
-                }
-            }
-        }
-
-        return false;
     }
 
     public boolean isBoardInCheck(TeamColor teamColor, ChessBoard board){
@@ -210,11 +194,15 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
+        if (isInCheckmate(teamColor)){
+            return false;
+        }
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 ChessPiece friendPiece = board.getPiece(new ChessPosition(i + 1, j + 1));
                 if (friendPiece != null && friendPiece.getTeamColor() == teamColor){
-                    if(!validMoves(new ChessPosition(i + 1, j + 1)).isEmpty()){
+                    var moves = validMoves(new ChessPosition(i + 1, j + 1));
+                    if(!moves.isEmpty()){
                         return false;
                     }
                 }
