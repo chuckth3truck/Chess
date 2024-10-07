@@ -67,8 +67,6 @@ public class ChessGame {
 
         return validMoves;
     }
-    //    loop through piece and all their moves if the move is made and the board is inchecl then that piece cannot move
-
 
     /**
      * Makes a move in a chess game
@@ -161,6 +159,23 @@ public class ChessGame {
         return isBoardInCheck(teamColor, this.board);
     }
 
+
+    public boolean checkValidMoves(TeamColor teamColor){
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                ChessPiece friendPiece = board.getPiece(new ChessPosition(i + 1, j + 1));
+                if (friendPiece != null && friendPiece.getTeamColor() == teamColor){
+                    var moves = validMoves(new ChessPosition(i + 1, j + 1));
+                    if (!moves.isEmpty()){
+                        return false;
+                    }
+                }
+
+            }
+        }
+        return true;
+    }
+
     /**
      * Determines if the given team is in checkmate
      *
@@ -169,19 +184,8 @@ public class ChessGame {
      */
     public boolean isInCheckmate(TeamColor teamColor) {
         if (isInCheck(teamColor)){
-            for (int i = 0; i < 8; i++) {
-                for (int j = 0; j < 8; j++) {
-                    ChessPiece friendPiece = board.getPiece(new ChessPosition(i + 1, j + 1));
-                    if (friendPiece != null && friendPiece.getTeamColor() == teamColor){
-                         var moves = validMoves(new ChessPosition(i + 1, j + 1));
-                        if (!moves.isEmpty()){
-                            return false;
-                        }
-                    }
 
-                }
-            }
-            return true;
+            return checkValidMoves(teamColor);
         }
         return false;
     }
@@ -197,18 +201,8 @@ public class ChessGame {
         if (isInCheckmate(teamColor)){
             return false;
         }
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                ChessPiece friendPiece = board.getPiece(new ChessPosition(i + 1, j + 1));
-                if (friendPiece != null && friendPiece.getTeamColor() == teamColor){
-                    var moves = validMoves(new ChessPosition(i + 1, j + 1));
-                    if(!moves.isEmpty()){
-                        return false;
-                    }
-                }
-            }
-        }
-        return true;
+
+        return checkValidMoves(teamColor);
     }
 
     /**
