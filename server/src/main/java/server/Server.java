@@ -1,5 +1,5 @@
 package server;
-import com.google.gson.Gson;
+import com.google.gson.*;
 import spark.*;
 
 public class Server {
@@ -11,7 +11,7 @@ public class Server {
 
         // Register your endpoints and handle exceptions here.
 //        Spark.delete("/Clear", this::clear);
-        Spark.post("/Register", this::createUser);
+        Spark.post("/user", this::createUser);
 
 
 
@@ -30,7 +30,11 @@ public class Server {
 
 
     public Object createUser(Request req, Response res){
-        return new Gson().toJson(String.format("{'user': %s}", req.body()));
+        JsonObject body = new Gson().fromJson(String.format("%s", req.body()), JsonObject.class);
+        JsonElement user = body.get("username");
+        JsonElement password = body.get("password");
+        JsonElement email = body.get("email");
+        return String.format("%s", user);
     }
 
 }
