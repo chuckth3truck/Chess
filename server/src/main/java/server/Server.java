@@ -33,8 +33,8 @@ public class Server {
 
     public Object createUser(Request req, Response res){
         JsonObject body = new Gson().fromJson(String.format("%s", req.body()), JsonObject.class);
-        JsonElement user = body.get("username");
-        return String.format("%s", user);
+        String user = body.get("username").toString();
+
     }
 
     public Object login(Request req, Response res){
