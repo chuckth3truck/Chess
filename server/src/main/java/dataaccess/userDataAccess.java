@@ -1,15 +1,15 @@
 package dataaccess;
 
 import com.google.gson.JsonObject;
-
+import model.userData;
 import java.util.ArrayList;
 import java.util.Collection;
 
 
 public interface userDataAccess {
-    JsonObject getUserData(String username) throws DataAccessException;
+    userData getUserData(String username) throws DataAccessException;
 
-    String addUser(JsonObject userData);
+    String addUser(userData userData);
 
     String deleteUser(String username);
 

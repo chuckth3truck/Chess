@@ -2,18 +2,18 @@ package dataaccess;
 
 
 import com.google.gson.JsonObject;
-
+import model.userData;
 
 import java.util.HashMap;
 
 public class userDAOMemory implements userDataAccess{
-    private final HashMap<String, JsonObject> userInfo = new HashMap<>();
+    private final HashMap<String, userData> userInfo = new HashMap<>();
 
     @Override
-    public String addUser(JsonObject userData) {
-        String username = userData.get("username").toString();
-        userInfo.put(username, userData);
-        return userData.get("username").toString();
+    public String addUser(userData userdata) {
+        String username = userdata.username();
+        userInfo.put(username, userdata);
+        return userdata.username();
     }
 
     @Override
@@ -28,7 +28,7 @@ public class userDAOMemory implements userDataAccess{
         return "success";
     }
 
-    public JsonObject getUserData(String username) throws DataAccessException{
+    public userData getUserData(String username) throws DataAccessException{
         if (userInfo.containsKey(username)){
             return userInfo.get(username);
         }
