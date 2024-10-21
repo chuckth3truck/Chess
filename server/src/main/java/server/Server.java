@@ -31,20 +31,9 @@ public class Server {
         Spark.awaitStop();
     }
 
-//    things to add to server design # what is being returned by create user data and also add step to create an auth token and store it in database
-//    rework logout by getting auth data for the user and then deleting it
-//    in list games change it to check the auth token not the user data, add call to
-//    rework it a couple things because you swicthed up some stuff
-//    add more detailed returns
-//    add actual method calls for things when created
-//    check that the game actually exists.
-
-
     public Object createUser(Request req, Response res){
         JsonObject body = new Gson().fromJson(String.format("%s", req.body()), JsonObject.class);
         JsonElement user = body.get("username");
-        JsonElement password = body.get("password");
-        JsonElement email = body.get("email");
         return String.format("%s", user);
     }
 
