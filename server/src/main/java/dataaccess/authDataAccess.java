@@ -1,12 +1,13 @@
 package dataaccess;
 
 import com.google.gson.JsonObject;
+import model.authData;
 
 public interface authDataAccess {
-    JsonObject createNewAuth(String username) throws DataAccessException;
+    authData createNewAuth(String username);
 
-    JsonObject getUser(String authToken) throws DataAccessException;
+    String getUser(String authToken) throws DataAccessException;
 
-    String clear() throws DataAccessException;
+    void clear();
 
 }
