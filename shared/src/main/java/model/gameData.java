@@ -1,6 +1,7 @@
 package model;
 
 import chess.ChessGame;
+import com.google.gson.Gson;
 
 import java.util.Objects;
 
@@ -13,5 +14,10 @@ public record gameData(int gameID, String whiteUsername, String blackUsername, S
         else{
             return new gameData(gameID, whiteUsername, username, gameName, game);
         }
+    }
+
+    @Override
+    public String toString() {
+        return new Gson().toJson(this);
     }
 }
