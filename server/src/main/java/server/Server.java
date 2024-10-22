@@ -34,7 +34,7 @@ public class Server {
     public Object createUser(Request req, Response res){
         JsonObject body = new Gson().fromJson(String.format("%s", req.body()), JsonObject.class);
         String user = body.get("username").toString();
-
+        return user;
     }
 
     public Object login(Request req, Response res){
