@@ -32,7 +32,7 @@ public class userDAOMemory implements userDataAccess{
         if (userInfo.containsKey(username)){
             return userInfo.get(username);
         }
-        throw new DataAccessException("username not in database");
+        throw new DataAccessException("username not in database", 401);
     }
 
 }

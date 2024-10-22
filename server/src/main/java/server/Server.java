@@ -1,10 +1,13 @@
 package server;
 import com.google.gson.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import spark.*;
 import service.*;
 import dataaccess.*;
 
 public class Server {
+    private static final Logger log = LoggerFactory.getLogger(Server.class);
     private final userService user;
 
     public Server(){
@@ -26,6 +29,7 @@ public class Server {
         Spark.put("/game", this::addToGame);
 
 
+
         //This line initializes the server and can be removed once you have a functioning endpoint 
         Spark.init();
 
@@ -39,9 +43,15 @@ public class Server {
     }
 
     public Object createUser(Request req, Response res){
-        JsonObject body = new Gson().fromJson(String.format("%s", req.body()), JsonObject.class);
-        String user = body.get("username").toString();
-        return user;
+        ;
+        try {
+            return user.createUser(req);
+        }
+        catch (DataAccessException e){
+            res.status(e.getErrorCode());
+            System.out.println(e.getErrorMessage());
+            return e.getErrorMessage();
+        }
     }
 
     public Object login(Request req, Response res){

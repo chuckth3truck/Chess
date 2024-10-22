@@ -26,7 +26,7 @@ public class authDataDAOMemory  implements authDataAccess{
             }
 
         }
-        throw new DataAccessException("This authToken does not exist");
+        throw new DataAccessException("This authToken does not exist", 401);
     }
 
     @Override

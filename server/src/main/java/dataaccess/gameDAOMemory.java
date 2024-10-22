@@ -30,7 +30,7 @@ public class gameDAOMemory implements gameDataAccess{
     @Override
     public void addPlayer(String color, Integer gameID, String username) throws DataAccessException{
         if (!gameInfo.containsKey(gameID)){
-            throw new DataAccessException("gameID does not exist");
+            throw new DataAccessException("gameID does not exist", 401);
         }
         gameData game = gameInfo.get(gameID);
         gameInfo.remove(gameID);
