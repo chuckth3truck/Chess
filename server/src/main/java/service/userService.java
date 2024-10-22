@@ -72,6 +72,7 @@ public class userService {
 
     public void clearDB(){
         userdataAccess.clear();
+        authDataAccess.clear();
     }
 
 }

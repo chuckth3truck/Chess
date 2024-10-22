@@ -46,7 +46,7 @@ public class gameService {
         return "{}";
     }
 
-    public void clearDB() throws DataAccessException {
+    public void clearDB() {
         this.gamedataAccess.clear();
     }
 

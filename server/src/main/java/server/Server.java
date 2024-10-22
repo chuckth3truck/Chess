@@ -51,7 +51,7 @@ public class Server {
     }
 
     public Object createUser(Request req, Response res){
-        ;
+
         try {
             return user.createUser(req);
         }
@@ -59,6 +59,12 @@ public class Server {
             res.status(e.getErrorCode());
             System.out.println(e.getErrorMessage());
             return e.getErrorMessage();
+        }
+        catch (Exception e){
+            res.status(500);
+            return String.format("{ \"message\": \"Error: %s\" }", e.getMessage());
+
+
         }
     }
 
@@ -71,6 +77,12 @@ public class Server {
             System.out.println(e.getErrorMessage());
             return e.getErrorMessage();
         }
+        catch (Exception e){
+            res.status(500);
+            return String.format("{ \"message\": \"Error: %s\" }", e.getMessage());
+
+
+        }
     }
 
     public Object logout(Request req, Response res){
@@ -81,6 +93,12 @@ public class Server {
             res.status(e.getErrorCode());
             System.out.println(e.getErrorMessage());
             return e.getErrorMessage();
+        }
+        catch (Exception e){
+            res.status(500);
+            return String.format("{ \"message\": \"Error: %s\" }", e.getMessage());
+
+
         }
     }
 
@@ -93,6 +111,12 @@ public class Server {
             System.out.println(e.getErrorMessage());
             return e.getErrorMessage();
         }
+        catch (Exception e){
+            res.status(500);
+            return String.format("{ \"message\": \"Error: %s\" }", e.getMessage());
+
+
+        }
     }
 
     public Object createGame(Request req, Response res){
@@ -103,6 +127,12 @@ public class Server {
             res.status(e.getErrorCode());
             System.out.println(e.getErrorMessage());
             return e.getErrorMessage();
+        }
+        catch (Exception e){
+            res.status(500);
+            return String.format("{ \"message\": \"Error: %s\" }", e.getMessage());
+
+
         }
     }
 
@@ -115,9 +145,25 @@ public class Server {
             System.out.println(e.getErrorMessage());
             return e.getErrorMessage();
         }
+        catch (Exception e){
+            res.status(500);
+            return String.format("{ \"message\": \"Error: %s\" }", e.getMessage());
+
+
+        }
     }
 
     public Object clear(Request req, Response res){
-        return null;
+        try {
+            game.clearDB();
+            user.clearDB();
+        }
+
+        catch (Exception e){
+            res.status(500);
+            return String.format("{ \"message\": \"Error: %s\" }", e.getMessage());
+        }
+
+        return "{}";
     }
 }

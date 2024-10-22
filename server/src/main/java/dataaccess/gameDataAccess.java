@@ -15,5 +15,5 @@ public interface gameDataAccess {
 
     void addPlayer(String color, Integer gameID, String username) throws DataAccessException;
 
-    void clear() throws DataAccessException;
+    void clear();
 }
