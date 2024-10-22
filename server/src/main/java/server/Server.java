@@ -10,6 +10,7 @@ import dataaccess.*;
 public class Server {
     private static final Logger log = LoggerFactory.getLogger(Server.class);
     private final userService user;
+    private final gameService game;
 
 
     public Server(){
@@ -18,6 +19,7 @@ public class Server {
         gameDataAccess gameMemory = new gameDAOMemory();
 
         this.user = new userService(userMemory, authMemory);
+        this.game = new gameService(gameMemory, authMemory);
     }
 
     public int run(int desiredPort) {
@@ -83,15 +85,36 @@ public class Server {
     }
 
     public Object listGames(Request req, Response res){
-        return null;
+        try {
+            return game.listGames(req);
+        }
+        catch (DataAccessException e){
+            res.status(e.getErrorCode());
+            System.out.println(e.getErrorMessage());
+            return e.getErrorMessage();
+        }
     }
 
     public Object createGame(Request req, Response res){
-        return null;
+        try {
+            return game.createGame(req);
+        }
+        catch (DataAccessException e){
+            res.status(e.getErrorCode());
+            System.out.println(e.getErrorMessage());
+            return e.getErrorMessage();
+        }
     }
 
     public Object addToGame(Request req, Response res){
-        return null;
+        try {
+            return game.joinGame(req);
+        }
+        catch (DataAccessException e){
+            res.status(e.getErrorCode());
+            System.out.println(e.getErrorMessage());
+            return e.getErrorMessage();
+        }
     }
 
     public Object clear(Request req, Response res){

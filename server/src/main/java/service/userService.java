@@ -23,9 +23,9 @@ public class userService {
     public String createUser(Request req) throws DataAccessException{
         try{
             JsonObject body = new Gson().fromJson(String.format("%s", req.body()), JsonObject.class);
-            String username = body.get("username").toString();
-            String password = body.get("password").toString();
-            String email = body.get("email").toString();
+            String username = body.get("username").toString().replaceAll("\"", "");
+            String password = body.get("password").toString().replaceAll("\"", "");
+            String email = body.get("email").toString().replaceAll("\"", "");
             try{
                 userData userData = this.getUser(req);
                 authData auth = this.authDataAccess.createNewAuth(userData.username());
@@ -45,14 +45,14 @@ public class userService {
 
     public userData getUser(Request req) throws DataAccessException{
         JsonObject body = new Gson().fromJson(String.format("%s", req.body()), JsonObject.class);
-        String username = body.get("username").toString();
+        String username = body.get("username").toString().replaceAll("\"", "");
         return this.userdataAccess.getUserData(username);
     }
 
     public String checkAuth(Request req) throws DataAccessException{
         JsonObject body = new Gson().fromJson(String.format("%s", req.body()), JsonObject.class);
         userData userData = this.getUser(req);
-        String password = body.get("password").toString();
+        String password = body.get("password").toString().replaceAll("\"", "");
         if (Objects.equals(userData.password(), password)){
             if (this.authDataAccess.getUserByUsername(userData.username()) != null){
                 return this.authDataAccess.getUserByUsername(userData.username()).toString();

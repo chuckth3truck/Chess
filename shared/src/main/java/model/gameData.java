@@ -8,7 +8,8 @@ import java.util.Objects;
 public record gameData(int gameID, String whiteUsername, String blackUsername, String gameName, ChessGame game) {
 
     public gameData rename(String color, String username){
-        if (Objects.equals(color, "white")){
+        String lColor = color.toLowerCase();
+        if (Objects.equals(lColor, "white")){
             return new gameData(gameID, username, blackUsername, gameName, game);
         }
         else{

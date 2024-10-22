@@ -11,7 +11,7 @@ public interface gameDataAccess {
 
     int createGame(String gameName);
 
-    Boolean checkGameExists(Integer gameID);
+    void checkGameExists(Integer gameID) throws DataAccessException;
 
     void addPlayer(String color, Integer gameID, String username) throws DataAccessException;
 
