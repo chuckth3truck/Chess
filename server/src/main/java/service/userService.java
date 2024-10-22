@@ -9,15 +9,15 @@ public class userService {
         this.dataAccess = dataAccess;
     }
 
-    public userData createUser(String username, String password, String email){
+    public String createUser(String username, String password, String email){
         userData user = new userData(username, password, email);
         dataAccess.addUser(user);
-        return user;
+        return user.toString();
     }
 
-    public userData getUser(String username){
+    public String getUser(String username){
         try{
-            return dataAccess.getUserData(username);
+            return dataAccess.getUserData(username).toString();
         }
         catch(Exception e){
             return null;

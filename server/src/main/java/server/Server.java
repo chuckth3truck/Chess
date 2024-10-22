@@ -1,8 +1,15 @@
 package server;
 import com.google.gson.*;
 import spark.*;
+import service.*;
+import dataaccess.*;
 
 public class Server {
+    private final userService user;
+
+    public Server(){
+        this.user = new userService(new userDAOMemory());
+    }
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
