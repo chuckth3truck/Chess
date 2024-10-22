@@ -37,6 +37,11 @@ public class authDataDAOMemory  implements authDataAccess{
         return null;
     }
 
+    @Override
+    public void deleteAuth(String username) {
+        authInfo.remove(username);
+    }
+
 
     @Override
     public void clear() {

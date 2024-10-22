@@ -10,6 +10,8 @@ public interface authDataAccess {
 
     authData getUserByUsername(String Username);
 
+    void deleteAuth(String username);
+
     void clear();
 
 }

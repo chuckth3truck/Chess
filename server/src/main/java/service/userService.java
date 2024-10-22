@@ -9,6 +9,7 @@ import model.userData;
 import spark.*;
 
 import java.util.Objects;
+import java.util.Set;
 
 public class userService {
     private final userDataAccess userdataAccess;
@@ -25,10 +26,17 @@ public class userService {
             String username = body.get("username").toString();
             String password = body.get("password").toString();
             String email = body.get("email").toString();
-            userData user = new userData(username, password, email);
-            userdataAccess.addUser(user);
-            authData auth = authDataAccess.createNewAuth(username);
-            return auth.toString();
+            try{
+                userData userData = this.getUser(req);
+                authData auth = this.authDataAccess.createNewAuth(userData.username());
+                return auth.toString();
+            }
+            catch (DataAccessException e) {
+                userData user = new userData(username, password, email);
+                this.userdataAccess.addUser(user);
+                authData auth = this.authDataAccess.createNewAuth(username);
+                return auth.toString();
+            }
         }
         catch (Exception e) {
             throw new DataAccessException("did not get all required values", 400);
@@ -38,7 +46,7 @@ public class userService {
     public userData getUser(Request req) throws DataAccessException{
         JsonObject body = new Gson().fromJson(String.format("%s", req.body()), JsonObject.class);
         String username = body.get("username").toString();
-        return userdataAccess.getUserData(username);
+        return this.userdataAccess.getUserData(username);
     }
 
     public String checkAuth(Request req) throws DataAccessException{
@@ -46,13 +54,20 @@ public class userService {
         userData userData = this.getUser(req);
         String password = body.get("password").toString();
         if (Objects.equals(userData.password(), password)){
-            if (authDataAccess.getUserByUsername(userData.username()) != null){
-                return authDataAccess.getUserByUsername(userData.username()).toString();
+            if (this.authDataAccess.getUserByUsername(userData.username()) != null){
+                return this.authDataAccess.getUserByUsername(userData.username()).toString();
             }
-            authData auth = authDataAccess.createNewAuth(userData.username());
+            authData auth = this.authDataAccess.createNewAuth(userData.username());
             return auth.toString();
         }
         throw new DataAccessException("", 401);
+    }
+
+    public String logout(Request req) throws DataAccessException{
+        String authToken = req.headers("Authorization");
+        String user = this.authDataAccess.getUserByAuth(authToken);
+        this.authDataAccess.deleteAuth(user);
+        return "{}";
     }
 
     public void clearDB(){

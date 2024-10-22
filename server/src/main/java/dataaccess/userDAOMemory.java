@@ -17,15 +17,13 @@ public class userDAOMemory implements userDataAccess{
     }
 
     @Override
-    public String deleteUser(String username) {
+    public void deleteUser(String username) {
         userInfo.remove(username);
-        return "success";
     }
 
     @Override
-    public String clear(){
+    public void clear(){
         userInfo.clear();
-        return "success";
     }
 
     public userData getUserData(String username) throws DataAccessException{

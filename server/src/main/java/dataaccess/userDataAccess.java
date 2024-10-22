@@ -11,7 +11,7 @@ public interface userDataAccess {
 
     String addUser(userData userData);
 
-    String deleteUser(String username);
+    void deleteUser(String username);
 
-    String clear();
+    void clear();
 }

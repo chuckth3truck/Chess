@@ -15,6 +15,8 @@ public class Server {
     public Server(){
         authDataAccess authMemory = new authDataDAOMemory();
         userDataAccess userMemory = new userDAOMemory();
+        gameDataAccess gameMemory = new gameDAOMemory();
+
         this.user = new userService(userMemory, authMemory);
     }
 
@@ -70,7 +72,14 @@ public class Server {
     }
 
     public Object logout(Request req, Response res){
-        return null;
+        try {
+            return user.logout(req);
+        }
+        catch (DataAccessException e){
+            res.status(e.getErrorCode());
+            System.out.println(e.getErrorMessage());
+            return e.getErrorMessage();
+        }
     }
 
     public Object listGames(Request req, Response res){
