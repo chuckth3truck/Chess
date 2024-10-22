@@ -1,5 +1,6 @@
 package server;
 import com.google.gson.*;
+import model.userData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.*;
@@ -10,8 +11,11 @@ public class Server {
     private static final Logger log = LoggerFactory.getLogger(Server.class);
     private final userService user;
 
+
     public Server(){
-        this.user = new userService(new userDAOMemory());
+        authDataAccess authMemory = new authDataDAOMemory();
+        userDataAccess userMemory = new userDAOMemory();
+        this.user = new userService(userMemory, authMemory);
     }
 
     public int run(int desiredPort) {
@@ -55,7 +59,14 @@ public class Server {
     }
 
     public Object login(Request req, Response res){
-        return null;
+        try {
+            return user.checkAuth(req);
+        }
+        catch (DataAccessException e){
+            res.status(e.getErrorCode());
+            System.out.println(e.getErrorMessage());
+            return e.getErrorMessage();
+        }
     }
 
     public Object logout(Request req, Response res){

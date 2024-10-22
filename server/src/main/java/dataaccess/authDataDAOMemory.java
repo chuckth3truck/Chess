@@ -19,7 +19,7 @@ public class authDataDAOMemory  implements authDataAccess{
     }
 
     @Override
-    public String getUser(String authToken) throws DataAccessException {
+    public String getUserByAuth(String authToken) throws DataAccessException {
         for (authData auth: authInfo.values()){
             if (Objects.equals(auth.authToken(), authToken)){
                 return auth.username();
@@ -28,6 +28,15 @@ public class authDataDAOMemory  implements authDataAccess{
         }
         throw new DataAccessException("This authToken does not exist", 401);
     }
+
+    @Override
+    public authData getUserByUsername(String Username) {
+        if (authInfo.containsKey(Username)){
+            return authInfo.get(Username);
+        }
+        return null;
+    }
+
 
     @Override
     public void clear() {

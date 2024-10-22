@@ -6,7 +6,9 @@ import model.authData;
 public interface authDataAccess {
     authData createNewAuth(String username);
 
-    String getUser(String authToken) throws DataAccessException;
+    String getUserByAuth(String authToken) throws DataAccessException;
+
+    authData getUserByUsername(String Username);
 
     void clear();
 

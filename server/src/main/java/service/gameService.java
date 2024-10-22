@@ -7,24 +7,24 @@ import com.google.gson.*;
 import java.util.HashMap;
 
 public class gameService {
-    private final gameDataAccess dataAccess;
+    private final gameDataAccess userdataAccess;
 
-    public gameService(gameDataAccess dataAccess){
-        this.dataAccess = dataAccess;
+    public gameService(gameDataAccess userdataAccess){
+        this.userdataAccess = userdataAccess;
     }
 
     public String createGame(String gameName){
-        int game = dataAccess.createGame(gameName);
+        int game = userdataAccess.createGame(gameName);
         return String.format("{'gameID':%d}", game);
     }
 
     public String listGames(){
-        return new Gson().toJson(dataAccess.getGames());
+        return new Gson().toJson(userdataAccess.getGames());
     }
 
     public String joinGame(String playerColor, int gameID, String username){
         try{
-            dataAccess.addPlayer(playerColor, gameID, username);
+            userdataAccess.addPlayer(playerColor, gameID, username);
         } catch (DataAccessException e) {
             return String.format("{'error':%s}", e);
         }
@@ -32,7 +32,7 @@ public class gameService {
     }
 
     public void clearDB() throws DataAccessException {
-        dataAccess.clear();
+        userdataAccess.clear();
     }
 
 
