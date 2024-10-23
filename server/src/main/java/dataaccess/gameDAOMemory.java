@@ -23,7 +23,7 @@ public class gameDAOMemory implements gameDataAccess{
     @Override
     public int createGame(String gameName){
         int gameID = gameInfo.size() + 100;
-        gameInfo.put(gameID, new gameData(gameID, "null", "null", gameName, new ChessGame()));
+        gameInfo.put(gameID, new gameData(gameID, null, null, gameName, new ChessGame()));
         return gameID;
     }
 
@@ -33,7 +33,7 @@ public class gameDAOMemory implements gameDataAccess{
             throw new DataAccessException("game does not exist", 400);
         }
         gameData game = gameInfo.get(gameID);
-        if (!Objects.equals(game.blackUsername(), "null") && !Objects.equals(game.whiteUsername(), "null")){
+        if (!Objects.equals(game.blackUsername(), null) && !Objects.equals(game.whiteUsername(), null)){
             throw new DataAccessException("game taken", 403);
         }
     }
@@ -45,10 +45,10 @@ public class gameDAOMemory implements gameDataAccess{
         }
         gameData game = gameInfo.get(gameID);
         String lColor = color.toLowerCase();
-        if (lColor.equals("white") && !Objects.equals(game.whiteUsername(), "null")){
+        if (lColor.equals("white") && !Objects.equals(game.whiteUsername(), null)){
             throw new DataAccessException("game already has white", 403);
         }
-        if (lColor.equals("black") && !Objects.equals(game.blackUsername(), "null")){
+        if (lColor.equals("black") && !Objects.equals(game.blackUsername(), null)){
             throw new DataAccessException("game already has black", 403);
         }
 
