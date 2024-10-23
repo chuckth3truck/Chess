@@ -14,4 +14,6 @@ public interface userDataAccess {
     void deleteUser(String username);
 
     void clear();
+
+    Boolean checkUserExists(String username);
 }

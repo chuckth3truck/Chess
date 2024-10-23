@@ -9,7 +9,6 @@ import model.userData;
 import spark.*;
 
 import java.util.Objects;
-import java.util.Set;
 
 public class userService {
     private final userDataAccess userdataAccess;
@@ -21,26 +20,29 @@ public class userService {
     }
 
     public String createUser(Request req) throws DataAccessException{
-        try{
-            JsonObject body = new Gson().fromJson(String.format("%s", req.body()), JsonObject.class);
-            String username = body.get("username").toString().replaceAll("\"", "");
-            String password = body.get("password").toString().replaceAll("\"", "");
-            String email = body.get("email").toString().replaceAll("\"", "");
-            try{
-                userData userData = this.getUser(req);
-                authData auth = this.authDataAccess.createNewAuth(userData.username());
-                return auth.toString();
-            }
-            catch (DataAccessException e) {
-                userData user = new userData(username, password, email);
-                this.userdataAccess.addUser(user);
-                authData auth = this.authDataAccess.createNewAuth(username);
-                return auth.toString();
-            }
+        String username;
+        String password;
+        String email;
+        JsonObject body = new Gson().fromJson(String.format("%s", req.body()), JsonObject.class);
+
+        try {
+            username = body.get("username").toString().replaceAll("\"", "");
+            password = body.get("password").toString().replaceAll("\"", "");
+            email = body.get("email").toString().replaceAll("\"", "");
         }
         catch (Exception e) {
-            throw new DataAccessException("did not get all required values", 400);
+            throw new DataAccessException("bad request", 400);
         }
+
+        if (this.userdataAccess.checkUserExists(username)){
+            throw new DataAccessException("user already registered", 403);
+        }
+
+        userData user = new userData(username, password, email);
+        this.userdataAccess.addUser(user);
+        authData auth = this.authDataAccess.createNewAuth(username);
+        return auth.toString();
+
     }
 
     public userData getUser(Request req) throws DataAccessException{

@@ -4,6 +4,7 @@ package dataaccess;
 import com.google.gson.JsonObject;
 import model.userData;
 
+import javax.swing.text.StyledEditorKit;
 import java.util.HashMap;
 
 public class userDAOMemory implements userDataAccess{
@@ -31,6 +32,10 @@ public class userDAOMemory implements userDataAccess{
             return userInfo.get(username);
         }
         throw new DataAccessException("username not in database", 401);
+    }
+
+    public Boolean checkUserExists(String username){
+        return userInfo.containsKey(username);
     }
 
 }
