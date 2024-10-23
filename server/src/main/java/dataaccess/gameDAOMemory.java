@@ -14,7 +14,7 @@ public class gameDAOMemory implements gameDataAccess{
 
     @Override
     public HashMap<String, ArrayList<gameData>> getGames(){
-        var gameList = new ArrayList<gameData>(gameInfo.values());
+        var gameList = new ArrayList<>(gameInfo.values());
         var games = new HashMap<String, ArrayList<gameData>>();
         games.put("games", gameList);
         return games;

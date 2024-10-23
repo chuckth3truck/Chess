@@ -64,7 +64,7 @@ public class userService {
 
     public String logout(Request req) throws DataAccessException{
         String authToken = req.headers("Authorization");
-        String user = this.authDataAccess.getUserByAuth(authToken);
+        this.authDataAccess.getUserByAuth(authToken);
         this.authDataAccess.deleteAuth(authToken);
         return "{}";
     }

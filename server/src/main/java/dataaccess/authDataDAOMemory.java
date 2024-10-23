@@ -1,10 +1,8 @@
 package dataaccess;
 
-import com.google.gson.JsonObject;
 import model.authData;
 
 import java.util.HashMap;
-import java.util.Objects;
 import java.util.UUID;
 
 public class authDataDAOMemory  implements authDataAccess{
@@ -25,32 +23,8 @@ public class authDataDAOMemory  implements authDataAccess{
         if (authInfo.containsKey(authToken)){
             return authInfo.get(authToken).username();
         }
-//        for (authData auth: authInfo.values()){
-//            if (Objects.equals(auth.authToken(), authToken)){
-//                return auth.username();
-//            }
-//
-//        }
-//        if (authUserMap.containsKey(authToken)){
-//            String username = authUserMap.get(authToken);
-//            if (authInfo.containsKey(username)) {
-//                return authInfo.get(username).username();
-//            }
-//        }
-        throw new DataAccessException("This authToken does not exist", 401);
-    }
 
-    @Override
-    public authData getUserByUsername(String Username) {
-//        if (authInfo.containsKey(Username)){
-//            return authInfo.get(Username);
-//        }
-        for (authData auth: authInfo.values()) {
-            if (Objects.equals(auth.username(), Username)) {
-                return auth;
-            }
-        }
-        return null;
+        throw new DataAccessException("This authToken does not exist", 401);
     }
 
     @Override

@@ -1,13 +1,9 @@
 package server;
-import com.google.gson.*;
-import model.userData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.*;
 import service.*;
 import dataaccess.*;
-
-import java.util.Objects;
 
 public class Server {
     private static final Logger log = LoggerFactory.getLogger(Server.class);
@@ -65,7 +61,7 @@ public class Server {
         }
         catch (Exception e){
             res.status(500);
-            return String.format("{ \"message\": \"Errorc: %s\" }", e.getMessage());
+            return String.format("{ \"message\": \"Error: %s\" }", e.getMessage());
 
 
         }
@@ -82,7 +78,7 @@ public class Server {
         }
         catch (Exception e){
             res.status(500);
-            return String.format("{ \"message\": \"Errorl: %s\" }", e.getMessage());
+            return String.format("{ \"message\": \"Error: %s\" }", e.getMessage());
 
 
         }
@@ -99,7 +95,7 @@ public class Server {
         }
         catch (Exception e){
             res.status(500);
-            return String.format("{ \"message\": \"Errorlo: %s\" }", e.getMessage());
+            return String.format("{ \"message\": \"Error: %s\" }", e.getMessage());
 
 
         }
