@@ -1,12 +1,10 @@
 package service;
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import dataaccess.DataAccessException;
 import dataaccess.userDataAccess;
 import dataaccess.authDataAccess;
 import model.authData;
 import model.userData;
-import spark.*;
 
 import java.util.Objects;
 
