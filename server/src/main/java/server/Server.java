@@ -54,7 +54,7 @@ public class Server {
 
         try {
             JsonObject body = new Gson().fromJson(String.format("%s", req.body()), JsonObject.class);
-            return user.createUser(req);
+            return user.createUser(body);
 
         }
         catch (DataAccessException e){
@@ -72,7 +72,8 @@ public class Server {
 
     public Object login(Request req, Response res){
         try {
-            return user.checkAuth(req);
+            JsonObject body = new Gson().fromJson(String.format("%s", req.body()), JsonObject.class);
+            return user.checkAuth(body);
         }
         catch (DataAccessException e){
             res.status(e.getErrorCode());
@@ -89,7 +90,8 @@ public class Server {
 
     public Object logout(Request req, Response res){
         try {
-            return user.logout(req);
+            String authToken = req.headers("Authorization");
+            return user.logout(authToken);
         }
         catch (DataAccessException e){
             res.status(e.getErrorCode());
@@ -106,7 +108,8 @@ public class Server {
 
     public Object listGames(Request req, Response res){
         try {
-            return game.listGames(req);
+            String authToken = req.headers("Authorization");
+            return game.listGames(authToken);
         }
         catch (DataAccessException e){
             res.status(e.getErrorCode());
@@ -123,7 +126,10 @@ public class Server {
 
     public Object createGame(Request req, Response res){
         try {
-            return game.createGame(req);
+            String authToken = req.headers("Authorization");
+            JsonObject body = new Gson().fromJson(String.format("%s", req.body()), JsonObject.class);
+
+            return game.createGame(authToken, body);
         }
         catch (DataAccessException e){
             res.status(e.getErrorCode());
@@ -140,7 +146,9 @@ public class Server {
 
     public Object addToGame(Request req, Response res){
         try {
-            return game.joinGame(req);
+            String authToken = req.headers("Authorization");
+            JsonObject body = new Gson().fromJson(String.format("%s", req.body()), JsonObject.class);
+            return game.joinGame(authToken, body);
         }
         catch (DataAccessException e){
             res.status(e.getErrorCode());

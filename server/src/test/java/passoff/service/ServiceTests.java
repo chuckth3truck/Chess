@@ -18,7 +18,7 @@ class ServiceTests {
 
     @Test
     void createUser() {
-        user.createUser();
+
     }
 
     @Test

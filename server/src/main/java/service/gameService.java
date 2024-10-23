@@ -16,27 +16,27 @@ public class gameService {
         this.authDataAccess = authDataAccess;
     }
 
-    public String createGame(Request req) throws DataAccessException{
-        String authToken = req.headers("Authorization");
+    public String createGame(String authToken, JsonObject body) throws DataAccessException{
+//        String authToken = req.headers("Authorization");
         this.authDataAccess.getUserByAuth(authToken);
 
-        JsonObject body = new Gson().fromJson(String.format("%s", req.body()), JsonObject.class);
+//        JsonObject body = new Gson().fromJson(String.format("%s", req.body()), JsonObject.class);
         String gameName = body.get("gameName").toString().replaceAll("\"", "");
         int game = this.gamedataAccess.createGame(gameName);
         return String.format("{ \"gameID\": %d }", game);
     }
 
-    public String listGames(Request req) throws DataAccessException{
-        String authToken = req.headers("Authorization");
+    public String listGames(String authToken) throws DataAccessException{
+//        String authToken = req.headers("Authorization");
         this.authDataAccess.getUserByAuth(authToken);
         return new Gson().toJson(this.gamedataAccess.getGames());
     }
 
-    public String joinGame(Request req) throws DataAccessException{
-        String authToken = req.headers("Authorization");
+    public String joinGame(String authToken, JsonObject body) throws DataAccessException{
+//        String authToken = req.headers("Authorization");
         String username = this.authDataAccess.getUserByAuth(authToken);
 
-        JsonObject body = new Gson().fromJson(String.format("%s", req.body()), JsonObject.class);
+//        JsonObject body = new Gson().fromJson(String.format("%s", req.body()), JsonObject.class);
         if (body.get("playerColor") == null){
             throw new DataAccessException("bad player color", 400);
         }

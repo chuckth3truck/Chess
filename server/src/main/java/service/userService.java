@@ -19,11 +19,11 @@ public class userService {
         this.authDataAccess = authDataAccess;
     }
 
-    public String createUser(Request req) throws DataAccessException{
+    public String createUser(JsonObject body) throws DataAccessException{
         String username;
         String password;
         String email;
-        JsonObject body = new Gson().fromJson(String.format("%s", req.body()), JsonObject.class);
+//        JsonObject body = new Gson().fromJson(String.format("%s", req.body()), JsonObject.class);
 
         try {
             username = body.get("username").toString().replaceAll("\"", "");
@@ -45,15 +45,15 @@ public class userService {
 
     }
 
-    public userData getUser(Request req) throws DataAccessException{
-        JsonObject body = new Gson().fromJson(String.format("%s", req.body()), JsonObject.class);
+    public userData getUser(JsonObject body) throws DataAccessException{
+//        JsonObject body = new Gson().fromJson(String.format("%s", req.body()), JsonObject.class);
         String username = body.get("username").toString().replaceAll("\"", "");
         return this.userdataAccess.getUserData(username);
     }
 
-    public String checkAuth(Request req) throws DataAccessException{
-        JsonObject body = new Gson().fromJson(String.format("%s", req.body()), JsonObject.class);
-        userData userData = this.getUser(req);
+    public String checkAuth(JsonObject body) throws DataAccessException{
+//        JsonObject body = new Gson().fromJson(String.format("%s", req.body()), JsonObject.class);
+        userData userData = this.getUser(body);
         String password = body.get("password").toString().replaceAll("\"", "");
         if (Objects.equals(userData.password(), password)){
             authData auth = this.authDataAccess.createNewAuth(userData.username());
@@ -62,8 +62,8 @@ public class userService {
         throw new DataAccessException("", 401);
     }
 
-    public String logout(Request req) throws DataAccessException{
-        String authToken = req.headers("Authorization");
+    public String logout(String authToken) throws DataAccessException{
+//        String authToken = req.headers("Authorization");
         this.authDataAccess.getUserByAuth(authToken);
         this.authDataAccess.deleteAuth(authToken);
         return "{}";
