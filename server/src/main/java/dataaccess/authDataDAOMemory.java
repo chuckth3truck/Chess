@@ -9,38 +9,53 @@ import java.util.UUID;
 
 public class authDataDAOMemory  implements authDataAccess{
     private final HashMap<String, authData> authInfo = new HashMap<>();
+//    private final HashMap<String, String> authUserMap = new HashMap<>();
 
     @Override
     public authData createNewAuth(String username) {
         String token = UUID.randomUUID().toString();
         authData auth = new authData(token, username);
-        authInfo.remove(username);
-        authInfo.put(username, auth);
+        authInfo.put(token, auth);
+//        authUserMap.put(token, username);
         return auth;
     }
 
     @Override
     public String getUserByAuth(String authToken) throws DataAccessException {
-        for (authData auth: authInfo.values()){
-            if (Objects.equals(auth.authToken(), authToken)){
-                return auth.username();
-            }
-
+        if (authInfo.containsKey(authToken)){
+            return authInfo.get(authToken).username();
         }
+//        for (authData auth: authInfo.values()){
+//            if (Objects.equals(auth.authToken(), authToken)){
+//                return auth.username();
+//            }
+//
+//        }
+//        if (authUserMap.containsKey(authToken)){
+//            String username = authUserMap.get(authToken);
+//            if (authInfo.containsKey(username)) {
+//                return authInfo.get(username).username();
+//            }
+//        }
         throw new DataAccessException("This authToken does not exist", 401);
     }
 
     @Override
     public authData getUserByUsername(String Username) {
-        if (authInfo.containsKey(Username)){
-            return authInfo.get(Username);
+//        if (authInfo.containsKey(Username)){
+//            return authInfo.get(Username);
+//        }
+        for (authData auth: authInfo.values()) {
+            if (Objects.equals(auth.username(), Username)) {
+                return auth;
+            }
         }
         return null;
     }
 
     @Override
-    public void deleteAuth(String username) {
-        authInfo.remove(username);
+    public void deleteAuth(String authToken) {
+        authInfo.remove(authToken);
     }
 
 

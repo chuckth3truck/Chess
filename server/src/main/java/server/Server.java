@@ -65,7 +65,7 @@ public class Server {
         }
         catch (Exception e){
             res.status(500);
-            return String.format("{ \"message\": \"Error: %s\" }", e.getMessage());
+            return String.format("{ \"message\": \"Errorc: %s\" }", e.getMessage());
 
 
         }
@@ -82,7 +82,7 @@ public class Server {
         }
         catch (Exception e){
             res.status(500);
-            return String.format("{ \"message\": \"Error: %s\" }", e.getMessage());
+            return String.format("{ \"message\": \"Errorl: %s\" }", e.getMessage());
 
 
         }
@@ -99,7 +99,7 @@ public class Server {
         }
         catch (Exception e){
             res.status(500);
-            return String.format("{ \"message\": \"Error: %s\" }", e.getMessage());
+            return String.format("{ \"message\": \"Errorlo: %s\" }", e.getMessage());
 
 
         }
