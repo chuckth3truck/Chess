@@ -7,6 +7,8 @@ import spark.*;
 import service.*;
 import dataaccess.*;
 
+import java.util.Objects;
+
 public class Server {
     private static final Logger log = LoggerFactory.getLogger(Server.class);
     private final userService user;
@@ -54,6 +56,7 @@ public class Server {
 
         try {
             return user.createUser(req);
+
         }
         catch (DataAccessException e){
             res.status(e.getErrorCode());
@@ -91,7 +94,7 @@ public class Server {
         }
         catch (DataAccessException e){
             res.status(e.getErrorCode());
-            System.out.println(e.getErrorMessage());
+            System.out.println(e.getErrorMessage() + "logout");
             return e.getErrorMessage();
         }
         catch (Exception e){
@@ -108,7 +111,7 @@ public class Server {
         }
         catch (DataAccessException e){
             res.status(e.getErrorCode());
-            System.out.println(e.getErrorMessage());
+            System.out.println(e.getErrorMessage() + " list games");
             return e.getErrorMessage();
         }
         catch (Exception e){
@@ -125,7 +128,7 @@ public class Server {
         }
         catch (DataAccessException e){
             res.status(e.getErrorCode());
-            System.out.println(e.getErrorMessage());
+            System.out.println(e.getErrorMessage() + " create game");
             return e.getErrorMessage();
         }
         catch (Exception e){

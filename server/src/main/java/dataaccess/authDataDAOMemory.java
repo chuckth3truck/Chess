@@ -14,6 +14,7 @@ public class authDataDAOMemory  implements authDataAccess{
     public authData createNewAuth(String username) {
         String token = UUID.randomUUID().toString();
         authData auth = new authData(token, username);
+        authInfo.remove(username);
         authInfo.put(username, auth);
         return auth;
     }

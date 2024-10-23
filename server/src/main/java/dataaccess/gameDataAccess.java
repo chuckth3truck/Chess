@@ -4,10 +4,11 @@ import com.google.gson.JsonObject;
 import model.gameData;
 
 import javax.xml.crypto.Data;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public interface gameDataAccess {
-    HashMap<Integer, gameData> getGames();
+    HashMap<String, ArrayList<gameData>> getGames();
 
     int createGame(String gameName);
 

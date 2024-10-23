@@ -37,6 +37,13 @@ public class gameService {
         String username = this.authDataAccess.getUserByAuth(authToken);
 
         JsonObject body = new Gson().fromJson(String.format("%s", req.body()), JsonObject.class);
+        if (body.get("playerColor") == null){
+            throw new DataAccessException("bad player color", 400);
+        }
+        if(body.get("gameID") == null){
+            throw new DataAccessException("bad player id", 400);
+        }
+
         String playerColor = body.get("playerColor").toString().replaceAll("\"", "");
         int gameID = body.get("gameID").getAsInt();
         this.gamedataAccess.checkGameExists(gameID);

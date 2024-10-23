@@ -3,6 +3,7 @@ package dataaccess;
 import chess.ChessGame;
 import model.gameData;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -12,8 +13,11 @@ public class gameDAOMemory implements gameDataAccess{
 
 
     @Override
-    public HashMap<Integer, gameData> getGames(){
-        return gameInfo;
+    public HashMap<String, ArrayList<gameData>> getGames(){
+        var gameList = new ArrayList<gameData>(gameInfo.values());
+        var games = new HashMap<String, ArrayList<gameData>>();
+        games.put("games", gameList);
+        return games;
     }
 
     @Override
@@ -40,6 +44,15 @@ public class gameDAOMemory implements gameDataAccess{
             throw new DataAccessException("gameID does not exist", 400);
         }
         gameData game = gameInfo.get(gameID);
+        String lColor = color.toLowerCase();
+        if (lColor.equals("white") && !Objects.equals(game.whiteUsername(), "null")){
+            throw new DataAccessException("game already has white", 403);
+        }
+        if (lColor.equals("black") && !Objects.equals(game.blackUsername(), "null")){
+            throw new DataAccessException("game already has black", 403);
+        }
+
+
         gameInfo.remove(gameID);
         gameInfo.put(gameID, game.rename(color, username));
     }

@@ -54,9 +54,6 @@ public class userService {
         userData userData = this.getUser(req);
         String password = body.get("password").toString().replaceAll("\"", "");
         if (Objects.equals(userData.password(), password)){
-            if (this.authDataAccess.getUserByUsername(userData.username()) != null){
-                return this.authDataAccess.getUserByUsername(userData.username()).toString();
-            }
             authData auth = this.authDataAccess.createNewAuth(userData.username());
             return auth.toString();
         }
