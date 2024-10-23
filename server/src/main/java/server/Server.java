@@ -1,4 +1,6 @@
 package server;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.*;
@@ -51,6 +53,7 @@ public class Server {
     public Object createUser(Request req, Response res){
 
         try {
+            JsonObject body = new Gson().fromJson(String.format("%s", req.body()), JsonObject.class);
             return user.createUser(req);
 
         }
