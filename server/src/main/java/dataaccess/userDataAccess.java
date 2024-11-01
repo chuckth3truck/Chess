@@ -9,7 +9,7 @@ public interface userDataAccess {
 
     void addUser(userData userData);
 
-    void clear();
+    void clear() throws DataAccessException;
 
     Boolean checkUserExists(String username);
 }

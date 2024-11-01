@@ -15,7 +15,14 @@ public class Server {
 
     public Server(){
         authDataAccess authMemory = new authDataDAOMemory();
-        userDataAccess userMemory = new userDAOMemory();
+        userDataAccess userMemory;
+        try{
+            userMemory = new UserDAOMysql();
+            System.out.println("using mysql");
+        }
+        catch (Exception e){
+            userMemory = new userDAOMemory();
+        }
         gameDataAccess gameMemory = new gameDAOMemory();
 
         this.user = new userService(userMemory, authMemory);

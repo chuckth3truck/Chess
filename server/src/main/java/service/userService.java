@@ -67,9 +67,14 @@ public class userService {
         return "{}";
     }
 
-    public void clearDB(){
-        userdataAccess.clear();
-        authDataAccess.clear();
+    public void clearDB() throws DataAccessException{
+        try {
+            userdataAccess.clear();
+            authDataAccess.clear();
+        }
+        catch (Exception e){
+            throw new DataAccessException("", 500);
+        }
     }
 
 }
