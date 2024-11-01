@@ -7,6 +7,8 @@ import model.authData;
 import model.userData;
 
 import java.util.Objects;
+import org.mindrot.jbcrypt.BCrypt;
+
 
 public class userService {
     private final userDataAccess userdataAccess;
@@ -36,7 +38,9 @@ public class userService {
             throw new DataAccessException("user already registered", 403);
         }
 
-        userData user = new userData(username, password, email);
+        String hashPassword = BCrypt.hashpw(password, BCrypt.gensalt());
+
+        userData user = new userData(username, hashPassword, email);
         this.userdataAccess.addUser(user);
         authData auth = this.authDataAccess.createNewAuth(username);
         return auth.toString();
@@ -53,7 +57,8 @@ public class userService {
 //        JsonObject body = new Gson().fromJson(String.format("%s", req.body()), JsonObject.class);
         userData userData = this.getUser(body);
         String password = body.get("password").toString().replaceAll("\"", "");
-        if (Objects.equals(userData.password(), password)){
+
+        if (BCrypt.checkpw(password, userData.password())){
             authData auth = this.authDataAccess.createNewAuth(userData.username());
             return auth.toString();
         }

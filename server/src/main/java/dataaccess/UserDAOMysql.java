@@ -2,6 +2,8 @@ package dataaccess;
 import com.google.gson.Gson;
 import model.userData;
 import java.sql.*;
+import org.mindrot.jbcrypt.BCrypt;
+
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 import static java.sql.Types.NULL;
@@ -57,8 +59,8 @@ public class UserDAOMysql implements userDataAccess{
     @Override
     public Boolean checkUserExists(String username) {
         try {
-            getUserData(username);
-            return true;
+            userData user = getUserData(username);
+            return user != null;
         }
         catch (Exception e){
             return false;
