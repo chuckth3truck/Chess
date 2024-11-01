@@ -44,7 +44,7 @@ public class AuthDataDAOMysql implements authDataAccess{
     @Override
     public String getUserByAuth(String authToken) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
-            var statement = "SELECT authToken, json FROM user WHERE authToken=?";
+            var statement = "SELECT authToken, json FROM auth WHERE authToken=?";
             try (var ps = conn.prepareStatement(statement)) {
                 ps.setString(1, authToken);
                 try (var rs = ps.executeQuery()) {
