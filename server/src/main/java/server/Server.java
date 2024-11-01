@@ -14,15 +14,25 @@ public class Server {
 
 
     public Server(){
-        authDataAccess authMemory = new authDataDAOMemory();
+        authDataAccess authMemory;
+        try{
+            authMemory = new AuthDataDAOMysql();
+            System.out.println("using mysql auth");
+
+        }
+        catch (Exception e){
+            authMemory = new authDataDAOMemory();
+        }
+
         userDataAccess userMemory;
         try{
             userMemory = new UserDAOMysql();
-            System.out.println("using mysql");
+            System.out.println("using mysql user");
         }
         catch (Exception e){
             userMemory = new userDAOMemory();
         }
+
         gameDataAccess gameMemory = new gameDAOMemory();
 
         this.user = new userService(userMemory, authMemory);

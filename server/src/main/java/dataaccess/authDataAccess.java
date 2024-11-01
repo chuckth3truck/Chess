@@ -9,6 +9,6 @@ public interface authDataAccess {
 
     void deleteAuth(String username);
 
-    void clear();
+    void clear() throws DataAccessException;
 
 }

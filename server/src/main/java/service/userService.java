@@ -78,7 +78,7 @@ public class userService {
             authDataAccess.clear();
         }
         catch (Exception e){
-            throw new DataAccessException("", 500);
+            throw new DataAccessException(e.getMessage(), 500);
         }
     }
 

@@ -32,7 +32,6 @@ public class UserDAOMysql implements userDataAccess{
         return null;
     }
     private userData readUser(ResultSet rs) throws SQLException {
-        var id = rs.getInt("id");
         var json = rs.getString("json");
         userData user = new Gson().fromJson(json, userData.class);
         return user;
