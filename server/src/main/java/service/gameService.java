@@ -31,7 +31,10 @@ public class gameService {
 
     public String listGames(String authToken) throws DataAccessException{
 //        String authToken = req.headers("Authorization");
-        this.authDataAccess.getUserByAuth(authToken);
+        String username = this.authDataAccess.getUserByAuth(authToken);
+        if (username == null){
+            throw new DataAccessException("unauthorized", 401);
+        }
         return new Gson().toJson(this.gamedataAccess.getGames());
     }
 
