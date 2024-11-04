@@ -3,16 +3,11 @@ package dataaccess;
 import chess.ChessGame;
 import com.google.gson.Gson;
 import model.gameData;
-import model.userData;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 
-import static java.sql.Statement.RETURN_GENERATED_KEYS;
-import static java.sql.Types.NULL;
 
 public class GameDAOMysql implements gameDataAccess{
 
