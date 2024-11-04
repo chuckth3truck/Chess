@@ -18,7 +18,10 @@ public class gameService {
 
     public String createGame(String authToken, JsonObject body) throws DataAccessException{
 //        String authToken = req.headers("Authorization");
-        this.authDataAccess.getUserByAuth(authToken);
+        String user = this.authDataAccess.getUserByAuth(authToken);
+        if (user == null){
+            throw new DataAccessException("unauthorized", 401);
+        }
 
 //        JsonObject body = new Gson().fromJson(String.format("%s", req.body()), JsonObject.class);
         String gameName = body.get("gameName").toString().replaceAll("\"", "");
@@ -35,6 +38,9 @@ public class gameService {
     public String joinGame(String authToken, JsonObject body) throws DataAccessException{
 //        String authToken = req.headers("Authorization");
         String username = this.authDataAccess.getUserByAuth(authToken);
+        if (username == null){
+            throw new DataAccessException("unauthorized", 401);
+        }
 
 //        JsonObject body = new Gson().fromJson(String.format("%s", req.body()), JsonObject.class);
         if (body.get("playerColor") == null){
