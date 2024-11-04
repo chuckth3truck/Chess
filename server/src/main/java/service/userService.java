@@ -49,13 +49,21 @@ public class userService {
 
     public userData getUser(JsonObject body) throws DataAccessException{
 //        JsonObject body = new Gson().fromJson(String.format("%s", req.body()), JsonObject.class);
-        String username = body.get("username").toString().replaceAll("\"", "");
-        return this.userdataAccess.getUserData(username);
+        try {
+            String username = body.get("username").toString().replaceAll("\"", "");
+            return this.userdataAccess.getUserData(username);
+        }
+        catch (Exception e){
+            throw new DataAccessException("cannot get user data", 401);
+        }
     }
 
     public String checkAuth(JsonObject body) throws DataAccessException{
 //        JsonObject body = new Gson().fromJson(String.format("%s", req.body()), JsonObject.class);
         userData userData = this.getUser(body);
+        if (userData == null){
+            throw new DataAccessException("user does not exist", 401);
+        }
         String password = body.get("password").toString().replaceAll("\"", "");
 
         if (BCrypt.checkpw(password, userData.password())){
@@ -67,7 +75,10 @@ public class userService {
 
     public String logout(String authToken) throws DataAccessException{
 //        String authToken = req.headers("Authorization");
-        this.authDataAccess.getUserByAuth(authToken);
+        String user = this.authDataAccess.getUserByAuth(authToken);
+        if (user == null){
+            throw new DataAccessException("user unauthourized", 401);
+        }
         this.authDataAccess.deleteAuth(authToken);
         return "{}";
     }
