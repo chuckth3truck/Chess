@@ -32,8 +32,16 @@ public class Server {
         catch (Exception e){
             userMemory = new userDAOMemory();
         }
+        gameDataAccess gameMemory;
+        try{
+            gameMemory = new GameDAOMysql();
+            System.out.println("using mysql game");
 
-        gameDataAccess gameMemory = new gameDAOMemory();
+        }
+        catch (Exception e){
+            gameMemory = new gameDAOMemory();
+            System.out.println(e.getMessage());
+        }
 
         this.user = new userService(userMemory, authMemory);
         this.game = new gameService(gameMemory, authMemory);

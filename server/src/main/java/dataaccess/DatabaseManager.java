@@ -1,5 +1,8 @@
 package dataaccess;
 
+import com.google.gson.Gson;
+import model.userData;
+
 import java.sql.*;
 import java.util.Properties;
 
@@ -74,7 +77,7 @@ public class DatabaseManager {
     }
 
     static void configureDatabase(String[] createStatements) throws DataAccessException {
-        DatabaseManager.createDatabase();
+        createDatabase();
         try (var conn = DatabaseManager.getConnection()) {
             for (var statement : createStatements) {
                 try (var preparedStatement = conn.prepareStatement(statement)) {
@@ -84,6 +87,54 @@ public class DatabaseManager {
         } catch (SQLException ex) {
             throw new DataAccessException(String.format("Unable to configure database: %s", ex.getMessage()), 500);
         }
+    }
+
+    static int executeUpdate(String statement, Object... params) throws DataAccessException {
+        try (var conn = getConnection()) {
+            try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
+                for (var i = 0; i < params.length; i++) {
+                    var param = params[i];
+                    if (param instanceof String p) ps.setString(i + 1, p);
+                    else if (param instanceof Integer p) ps.setInt(i + 1, p);
+                    else if (param == null) ps.setNull(i + 1, NULL);
+                }
+                ps.executeUpdate();
+
+                var rs = ps.getGeneratedKeys();
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+
+                return 0;
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException(String.format("unable to update database: %s, %s", statement, e.getMessage()), 500);
+        }
+    }
+
+    static String getGameData(String queryS, int queryI, String statement) throws DataAccessException {
+        try (var conn = DatabaseManager.getConnection()) {
+//            var statement = "SELECT username, json FROM user WHERE username=?";
+            try (var ps = conn.prepareStatement(statement)) {
+                if (queryI != 0){
+                    ps.setInt(1, queryI);
+                }
+                else {
+                    ps.setString(1, queryS);
+                }
+                try (var rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        return readData(rs);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new DataAccessException(String.format("Unable to read data: %s", e.getMessage()), 500);
+        }
+        return null;
+    }
+    static String readData(ResultSet rs) throws SQLException {
+        return rs.getString("json");
     }
 
 }

@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public interface gameDataAccess {
-    HashMap<String, ArrayList<gameData>> getGames();
+    HashMap<String, ArrayList<gameData>> getGames() throws DataAccessException;
 
     int createGame(String gameName);
 
@@ -14,5 +14,5 @@ public interface gameDataAccess {
 
     void addPlayer(String color, Integer gameID, String username) throws DataAccessException;
 
-    void clear();
+    void clear() throws DataAccessException;
 }

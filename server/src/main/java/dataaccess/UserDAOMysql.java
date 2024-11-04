@@ -60,8 +60,7 @@ public class UserDAOMysql implements userDataAccess{
         try {
             userData user = getUserData(username);
             return user != null;
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return false;
         }
     }

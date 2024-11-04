@@ -61,7 +61,7 @@ public class AuthDataDAOMysql implements authDataAccess{
     private String readUser(ResultSet rs) throws SQLException {
         var json = rs.getString("json");
         authData authData = new Gson().fromJson(json, authData.class);
-        return authData.authToken();
+        return authData.username();
     }
 
     @Override
@@ -77,7 +77,7 @@ public class AuthDataDAOMysql implements authDataAccess{
 
     @Override
     public void clear() throws DataAccessException{
-        var statement = "TRUNCATE user";
+        var statement = "TRUNCATE auth";
         executeUpdate(statement);
 
     }
