@@ -86,7 +86,7 @@ public class DatabaseManager {
         }
     }
 
-    static int executeUpdate(String statement, Object... params) throws DataAccessException {
+    static void executeUpdate(String statement, Object... params) throws DataAccessException {
         try (var conn = getConnection()) {
             try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
                 for (var i = 0; i < params.length; i++) {
@@ -104,27 +104,20 @@ public class DatabaseManager {
                 ps.executeUpdate();
 
                 var rs = ps.getGeneratedKeys();
-                if (rs.next()) {
-                    return rs.getInt(1);
-                }
-
-                return 0;
             }
         } catch (SQLException e) {
             throw new DataAccessException(String.format("unable to update database: %s, %s", statement, e.getMessage()), 500);
         }
     }
 
-    static String getGameData(String queryS, int queryI, String statement) throws DataAccessException {
+    static String getGameData(int queryI, String statement) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
 //            var statement = "SELECT username, json FROM user WHERE username=?";
             try (var ps = conn.prepareStatement(statement)) {
                 if (queryI != 0){
                     ps.setInt(1, queryI);
                 }
-                else {
-                    ps.setString(1, queryS);
-                }
+
                 try (var rs = ps.executeQuery()) {
                     if (rs.next()) {
                         return readData(rs);

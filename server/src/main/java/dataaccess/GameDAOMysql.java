@@ -71,7 +71,7 @@ public class GameDAOMysql implements GameDataAccess {
     public void checkGameExists(Integer gameID) throws DataAccessException {
         String game;
         try {
-            game = DatabaseManager.getGameData(null, gameID, "SELECT gameID, json FROM game WHERE gameID=?");
+            game = DatabaseManager.getGameData( gameID, "SELECT gameID, json FROM game WHERE gameID=?");
         }
         catch (Exception e){
             throw new DataAccessException("could not get game data: " + e.getMessage(), 500);
@@ -92,7 +92,7 @@ public class GameDAOMysql implements GameDataAccess {
     public void addPlayer(String color, Integer gameID, String username) throws DataAccessException {
         String game;
         try {
-            game = DatabaseManager.getGameData(null, gameID, "SELECT gameID, json FROM game WHERE gameID=?");
+            game = DatabaseManager.getGameData(gameID, "SELECT gameID, json FROM game WHERE gameID=?");
         } catch (Exception e) {
             throw new DataAccessException("could not get game data: " + e.getMessage(), 500);
 

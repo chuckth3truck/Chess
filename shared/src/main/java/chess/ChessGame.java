@@ -127,20 +127,27 @@ public class ChessGame {
         return null;
     }
 
+    private boolean checkBoard(TeamColor teamColor, ChessBoard board, ChessPosition kingPos, int i, int j){
+        ChessPiece enemyPiece = board.getPiece(new ChessPosition(i + 1, j + 1));
+        if (enemyPiece != null && enemyPiece.getTeamColor() != teamColor) {
+            var moves = enemyPiece.pieceMoves(board, new ChessPosition(i + 1, j + 1));
+            for (ChessMove move : moves) {
+                if (move.getEndPosition().getColumn() == kingPos.getColumn() && move.getEndPosition().getRow() == kingPos.getRow()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public boolean isBoardInCheck(TeamColor teamColor, ChessBoard board){
         ChessPosition kingPos = findKing(teamColor, board);
 
         if (kingPos != null) {
             for (int i = 0; i < 8; i++) {
                 for (int j = 0; j < 8; j++) {
-                    ChessPiece enemyPiece = board.getPiece(new ChessPosition(i + 1, j + 1));
-                    if (enemyPiece != null && enemyPiece.getTeamColor() != teamColor) {
-                        var moves = enemyPiece.pieceMoves(board, new ChessPosition(i + 1, j + 1));
-                        for (ChessMove move : moves) {
-                            if (move.getEndPosition().getColumn() == kingPos.getColumn() && move.getEndPosition().getRow() == kingPos.getRow()) {
-                                return true;
-                            }
-                        }
+                    if (checkBoard(teamColor, board, kingPos, i, j)){
+                        return true;
                     }
                 }
             }
