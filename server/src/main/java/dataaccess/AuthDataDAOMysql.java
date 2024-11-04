@@ -1,14 +1,14 @@
 package dataaccess;
 
 import com.google.gson.Gson;
-import model.authData;
+import model.AuthData;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
 
 
-public class AuthDataDAOMysql implements authDataAccess{
+public class AuthDataDAOMysql implements AuthDataAccess {
      final String[] createStatements = {
             """
             CREATE TABLE IF NOT EXISTS  auth (
@@ -25,10 +25,10 @@ public class AuthDataDAOMysql implements authDataAccess{
     }
 
     @Override
-    public authData createNewAuth(String username) {
+    public AuthData createNewAuth(String username) {
         var statement = "INSERT INTO auth (authToken, json) VALUES (?, ?)";
         String token = UUID.randomUUID().toString();
-        authData auth = new authData(token, username);
+        AuthData auth = new AuthData(token, username);
         try {
             DatabaseManager.executeUpdate(statement, token, new Gson().toJson(auth));
         }
@@ -58,7 +58,7 @@ public class AuthDataDAOMysql implements authDataAccess{
     }
     private String readUser(ResultSet rs) throws SQLException {
         var json = rs.getString("json");
-        authData authData = new Gson().fromJson(json, authData.class);
+        AuthData authData = new Gson().fromJson(json, AuthData.class);
         return authData.username();
     }
 

@@ -1,6 +1,6 @@
 package dataaccess;
 
-import model.authData;
+import model.AuthData;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -12,9 +12,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class AuthDataDAOMysqlTest {
 
-    private authDataAccess authMemory;
-    private authData auth;
-    private String token;
+    private AuthDataAccess authMemory;
+    private final AuthData auth;
+    private final String token;
 
     public AuthDataDAOMysqlTest() {
 
@@ -22,7 +22,7 @@ class AuthDataDAOMysqlTest {
             authMemory = new AuthDataDAOMysql();
             System.out.println("using mysql auth");
         } catch (Exception e) {
-            authMemory = new authDataDAOMemory();
+            authMemory = new AuthDataDAOMemory();
         }
         this.auth = authMemory.createNewAuth("user");
         token = auth.authToken();

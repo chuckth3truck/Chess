@@ -1,8 +1,5 @@
 package dataaccess;
 
-import com.google.gson.Gson;
-import model.userData;
-
 import java.sql.*;
 import java.util.Properties;
 

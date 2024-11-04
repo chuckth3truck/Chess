@@ -1,9 +1,9 @@
 package exception;
 
-public class responseException extends Exception {
+public class ResponseException extends Exception {
     private final int errorCode;
 
-    public responseException(int statusCode, String message) {
+    public ResponseException(int statusCode, String message) {
         super(message);
         this.errorCode = statusCode;
     }

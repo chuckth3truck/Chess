@@ -1,5 +1,5 @@
 package dataaccess;
-import model.userData;
+import model.UserData;
 
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class UserDAOMysqlTest {
-    private userDataAccess userMemory;
+    private UserDataAccess userMemory;
 
     public UserDAOMysqlTest() {
 
@@ -18,7 +18,7 @@ class UserDAOMysqlTest {
             userMemory = new UserDAOMysql();
             System.out.println("using mysql user");
         } catch (Exception e) {
-            userMemory = new userDAOMemory();
+            userMemory = new UserDAOMemory();
         }
     }
 
@@ -27,7 +27,7 @@ class UserDAOMysqlTest {
     @Test
     @Order(1)
     void addUser() {
-        userData user = new userData("user","pass", "email@email");
+        UserData user = new UserData("user","pass", "email@email");
         assertDoesNotThrow(() -> userMemory.addUser(user));
     }
 

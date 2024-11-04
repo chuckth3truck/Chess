@@ -1,20 +1,19 @@
 package service;
 import com.google.gson.JsonObject;
 import dataaccess.DataAccessException;
-import dataaccess.userDataAccess;
-import dataaccess.authDataAccess;
-import model.authData;
-import model.userData;
+import dataaccess.UserDataAccess;
+import dataaccess.AuthDataAccess;
+import model.AuthData;
+import model.UserData;
 
-import java.util.Objects;
 import org.mindrot.jbcrypt.BCrypt;
 
 
-public class userService {
-    private final userDataAccess userdataAccess;
-    private final authDataAccess authDataAccess;
+public class UserService {
+    private final UserDataAccess userdataAccess;
+    private final AuthDataAccess authDataAccess;
 
-    public userService(userDataAccess userDataAccess, authDataAccess authDataAccess){
+    public UserService(UserDataAccess userDataAccess, AuthDataAccess authDataAccess){
         this.userdataAccess = userDataAccess;
         this.authDataAccess = authDataAccess;
     }
@@ -40,14 +39,14 @@ public class userService {
 
         String hashPassword = BCrypt.hashpw(password, BCrypt.gensalt());
 
-        userData user = new userData(username, hashPassword, email);
+        UserData user = new UserData(username, hashPassword, email);
         this.userdataAccess.addUser(user);
-        authData auth = this.authDataAccess.createNewAuth(username);
+        AuthData auth = this.authDataAccess.createNewAuth(username);
         return auth.toString();
 
     }
 
-    public userData getUser(JsonObject body) throws DataAccessException{
+    public UserData getUser(JsonObject body) throws DataAccessException{
 //        JsonObject body = new Gson().fromJson(String.format("%s", req.body()), JsonObject.class);
         try {
             String username = body.get("username").toString().replaceAll("\"", "");
@@ -60,14 +59,14 @@ public class userService {
 
     public String checkAuth(JsonObject body) throws DataAccessException{
 //        JsonObject body = new Gson().fromJson(String.format("%s", req.body()), JsonObject.class);
-        userData userData = this.getUser(body);
+        UserData userData = this.getUser(body);
         if (userData == null){
             throw new DataAccessException("user does not exist", 401);
         }
         String password = body.get("password").toString().replaceAll("\"", "");
 
         if (BCrypt.checkpw(password, userData.password())){
-            authData auth = this.authDataAccess.createNewAuth(userData.username());
+            AuthData auth = this.authDataAccess.createNewAuth(userData.username());
             return auth.toString();
         }
         throw new DataAccessException("", 401);

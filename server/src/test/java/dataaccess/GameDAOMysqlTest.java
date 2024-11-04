@@ -1,6 +1,6 @@
 package dataaccess;
 
-import model.gameData;
+import model.GameData;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 
 class GameDAOMysqlTest {
-    private gameDataAccess gameMemory;
+    private GameDataAccess gameMemory;
 
     public GameDAOMysqlTest() {
         try{
@@ -22,7 +22,7 @@ class GameDAOMysqlTest {
 
         }
         catch (Exception e){
-            gameMemory = new gameDAOMemory();
+            gameMemory = new GameDAOMemory();
             System.out.println(e.getMessage());
         }
 
@@ -65,7 +65,7 @@ class GameDAOMysqlTest {
     @Order(4)
     void getGames() throws DataAccessException{
         assertDoesNotThrow(()->gameMemory.getGames());
-        ArrayList<gameData> games = gameMemory.getGames().get("games");
+        ArrayList<GameData> games = gameMemory.getGames().get("games");
         assertEquals(2, games.size());
     }
 

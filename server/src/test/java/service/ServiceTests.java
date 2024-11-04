@@ -1,26 +1,21 @@
 package service;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import dataaccess.*;
-import model.userData;
+import model.UserData;
 import org.junit.jupiter.api.Test;
-import service.*;
-import spark.Request;
+
 import com.google.gson.JsonObject;
 
 
 import java.util.Objects;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class ServiceTests {
-    private final authDataAccess authMemory = new authDataDAOMemory();
-    private final userDataAccess userMemory = new userDAOMemory();
-    private final gameDataAccess gameMemory = new gameDAOMemory();
+    private final AuthDataAccess authMemory = new AuthDataDAOMemory();
+    private final UserDataAccess userMemory = new UserDAOMemory();
+    private final GameDataAccess gameMemory = new GameDAOMemory();
 
-    private final userService user = new userService(userMemory, authMemory);
-    private final gameService game = new gameService(gameMemory, authMemory);
+    private final UserService user = new UserService(userMemory, authMemory);
+    private final GameService game = new GameService(gameMemory, authMemory);
 
 
     @Test
@@ -42,7 +37,7 @@ class ServiceTests {
     void getUser() {
         JsonObject userinfo = new JsonObject();
         userinfo.addProperty("username", "user1");
-        userData userdata = new userData("user1", "pass","test@blah.com");
+        UserData userdata = new UserData("user1", "pass","test@blah.com");
         try {
             assert Objects.equals(this.user.getUser(userinfo), userdata);
         }
@@ -50,22 +45,6 @@ class ServiceTests {
             System.out.println("exception was thrown");
         }
     }
-
-//    @Test
-//    void checkAuth() {
-//        JsonObject userinfo = new JsonObject();
-//        userinfo.addProperty("password", "pass");
-//        String res = "{"+
-//                "\"authToken\": \"8f2fdf82-d4a5-4d97-88d1-4bf9eb49cbba\","+
-//                "\"username\": \"user1\"}";
-//
-//        try {
-//            assert Objects.equals(this.user.checkAuth(userinfo), res);
-//        }
-//        catch (DataAccessException e){
-//            System.out.println("exception was thrown");
-//        }
-//    }
 
     @Test
     void logout() {

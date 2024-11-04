@@ -1,18 +1,18 @@
 package dataaccess;
 
-import model.authData;
+import model.AuthData;
 
 import java.util.HashMap;
 import java.util.UUID;
 
-public class authDataDAOMemory  implements authDataAccess{
-    private final HashMap<String, authData> authInfo = new HashMap<>();
+public class AuthDataDAOMemory implements AuthDataAccess {
+    private final HashMap<String, AuthData> authInfo = new HashMap<>();
 //    private final HashMap<String, String> authUserMap = new HashMap<>();
 
     @Override
-    public authData createNewAuth(String username) {
+    public AuthData createNewAuth(String username) {
         String token = UUID.randomUUID().toString();
-        authData auth = new authData(token, username);
+        AuthData auth = new AuthData(token, username);
         authInfo.put(token, auth);
 //        authUserMap.put(token, username);
         return auth;

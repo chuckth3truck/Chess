@@ -1,17 +1,17 @@
 package service;
 import dataaccess.DataAccessException;
-import dataaccess.authDataAccess;
-import dataaccess.gameDataAccess;
+import dataaccess.AuthDataAccess;
+import dataaccess.GameDataAccess;
 
 import com.google.gson.*;
 
 
 
-public class gameService {
-    private final gameDataAccess gamedataAccess;
-    private final dataaccess.authDataAccess authDataAccess;
+public class GameService {
+    private final GameDataAccess gamedataAccess;
+    private final AuthDataAccess authDataAccess;
 
-    public gameService(gameDataAccess gamedataAccess, authDataAccess authDataAccess){
+    public GameService(GameDataAccess gamedataAccess, AuthDataAccess authDataAccess){
         this.gamedataAccess = gamedataAccess;
         this.authDataAccess = authDataAccess;
     }

@@ -1,15 +1,15 @@
 package dataaccess;
 
 
-import model.userData;
+import model.UserData;
 
 import java.util.HashMap;
 
-public class userDAOMemory implements userDataAccess{
-    private final HashMap<String, userData> userInfo = new HashMap<>();
+public class UserDAOMemory implements UserDataAccess {
+    private final HashMap<String, UserData> userInfo = new HashMap<>();
 
     @Override
-    public void addUser(userData userdata) {
+    public void addUser(UserData userdata) {
         String username = userdata.username();
         userInfo.put(username, userdata);
 
@@ -21,7 +21,7 @@ public class userDAOMemory implements userDataAccess{
         userInfo.clear();
     }
 
-    public userData getUserData(String username) throws DataAccessException{
+    public UserData getUserData(String username) throws DataAccessException{
         if (userInfo.containsKey(username)){
             return userInfo.get(username);
         }

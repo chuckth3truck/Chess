@@ -2,14 +2,14 @@ package dataaccess;
 
 import chess.ChessGame;
 import com.google.gson.Gson;
-import model.gameData;
+import model.GameData;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 
 
-public class GameDAOMysql implements gameDataAccess{
+public class GameDAOMysql implements GameDataAccess {
 
     final String[] createStatements = {
             """
@@ -30,9 +30,9 @@ public class GameDAOMysql implements gameDataAccess{
     }
 
     @Override
-    public HashMap<String, ArrayList<gameData>> getGames() throws DataAccessException{
-        var result = new ArrayList<gameData>();
-        var games = new HashMap<String, ArrayList<gameData>>();
+    public HashMap<String, ArrayList<GameData>> getGames() throws DataAccessException{
+        var result = new ArrayList<GameData>();
+        var games = new HashMap<String, ArrayList<GameData>>();
         try (var conn = DatabaseManager.getConnection()) {
             var statement = "SELECT id, json FROM game";
             try (var ps = conn.prepareStatement(statement)) {
@@ -40,7 +40,7 @@ public class GameDAOMysql implements gameDataAccess{
                     while (rs.next()) {
 
                         String game= DatabaseManager.readData(rs);
-                        gameData gameInfo = new Gson().fromJson(game, gameData.class);
+                        GameData gameInfo = new Gson().fromJson(game, GameData.class);
                         result.add(gameInfo);
                     }
                 }
@@ -57,7 +57,7 @@ public class GameDAOMysql implements gameDataAccess{
         var statement = "INSERT INTO game (gameID, json) VALUES (?, ?)";
         int gameID = numGames + 100;
         numGames += 1;
-        gameData game = new gameData(gameID, null, null, gameName, new ChessGame());
+        GameData game = new GameData(gameID, null, null, gameName, new ChessGame());
         try {
             DatabaseManager.executeUpdate(statement, gameID, new Gson().toJson(game));
         }
@@ -81,7 +81,7 @@ public class GameDAOMysql implements gameDataAccess{
             throw new DataAccessException("game does not exist", 400);
         }
 
-        gameData gameInfo = new Gson().fromJson(game, gameData.class);
+        GameData gameInfo = new Gson().fromJson(game, GameData.class);
         if (!Objects.equals(gameInfo.blackUsername(), null) && !Objects.equals(gameInfo.whiteUsername(), null)){
             throw new DataAccessException("game taken", 403);
         }
@@ -97,7 +97,7 @@ public class GameDAOMysql implements gameDataAccess{
             throw new DataAccessException("could not get game data: " + e.getMessage(), 500);
 
         }
-        gameData gameInfo = new Gson().fromJson(game, gameData.class);
+        GameData gameInfo = new Gson().fromJson(game, GameData.class);
 
         String lColor = color.toLowerCase();
         if (lColor.equals("white") && !Objects.equals(gameInfo.whiteUsername(), null)){
@@ -112,7 +112,7 @@ public class GameDAOMysql implements gameDataAccess{
         DatabaseManager.executeUpdate(delStatement);
 
 
-        gameData newGame =gameInfo.rename(color, username);
+        GameData newGame =gameInfo.rename(color, username);
         var addStatement = "INSERT INTO game (gameID, json) VALUES (?, ?)";
 
         try {

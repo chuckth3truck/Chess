@@ -1,9 +1,9 @@
 package dataaccess;
 
-import model.authData;
+import model.AuthData;
 
-public interface authDataAccess {
-    authData createNewAuth(String username);
+public interface AuthDataAccess {
+    AuthData createNewAuth(String username);
 
     String getUserByAuth(String authToken) throws DataAccessException;
 

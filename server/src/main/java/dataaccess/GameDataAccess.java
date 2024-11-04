@@ -1,12 +1,12 @@
 package dataaccess;
 
-import model.gameData;
+import model.GameData;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public interface gameDataAccess {
-    HashMap<String, ArrayList<gameData>> getGames() throws DataAccessException;
+public interface GameDataAccess {
+    HashMap<String, ArrayList<GameData>> getGames() throws DataAccessException;
 
     int createGame(String gameName);
 

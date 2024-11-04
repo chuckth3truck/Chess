@@ -1,50 +1,47 @@
 package server;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import spark.*;
 import service.*;
 import dataaccess.*;
 
 public class Server {
-    private static final Logger log = LoggerFactory.getLogger(Server.class);
-    private final userService user;
-    private final gameService game;
+    private final UserService user;
+    private final GameService game;
 
 
     public Server(){
-        authDataAccess authMemory;
+        AuthDataAccess authMemory;
         try{
             authMemory = new AuthDataDAOMysql();
             System.out.println("using mysql auth");
 
         }
         catch (Exception e){
-            authMemory = new authDataDAOMemory();
+            authMemory = new AuthDataDAOMemory();
         }
 
-        userDataAccess userMemory;
+        UserDataAccess userMemory;
         try{
             userMemory = new UserDAOMysql();
             System.out.println("using mysql user");
         }
         catch (Exception e){
-            userMemory = new userDAOMemory();
+            userMemory = new UserDAOMemory();
         }
-        gameDataAccess gameMemory;
+        GameDataAccess gameMemory;
         try{
             gameMemory = new GameDAOMysql();
             System.out.println("using mysql game");
 
         }
         catch (Exception e){
-            gameMemory = new gameDAOMemory();
+            gameMemory = new GameDAOMemory();
             System.out.println(e.getMessage());
         }
 
-        this.user = new userService(userMemory, authMemory);
-        this.game = new gameService(gameMemory, authMemory);
+        this.user = new UserService(userMemory, authMemory);
+        this.game = new GameService(gameMemory, authMemory);
     }
 
     public int run(int desiredPort) {

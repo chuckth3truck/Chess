@@ -2,7 +2,7 @@ package model;
 
 import com.google.gson.Gson;
 
-public record authData(String authToken, String username) {
+public record AuthData(String authToken, String username) {
 
     @Override
     public String toString() {

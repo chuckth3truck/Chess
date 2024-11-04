@@ -1,10 +1,10 @@
 package dataaccess;
 import com.google.gson.Gson;
-import model.userData;
+import model.UserData;
 import java.sql.*;
 
 
-public class UserDAOMysql implements userDataAccess{
+public class UserDAOMysql implements UserDataAccess {
     final String[] createStatements = {
             """
             CREATE TABLE IF NOT EXISTS  user (
@@ -21,7 +21,7 @@ public class UserDAOMysql implements userDataAccess{
     }
 
     @Override
-    public userData getUserData(String username) throws DataAccessException {
+    public UserData getUserData(String username) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
             var statement = "SELECT username, json FROM user WHERE username=?";
             try (var ps = conn.prepareStatement(statement)) {
@@ -37,13 +37,13 @@ public class UserDAOMysql implements userDataAccess{
         }
         return null;
     }
-    private userData readUser(ResultSet rs) throws SQLException {
+    private UserData readUser(ResultSet rs) throws SQLException {
         var json = rs.getString("json");
-        return new Gson().fromJson(json, userData.class);
+        return new Gson().fromJson(json, UserData.class);
     }
 
     @Override
-    public void addUser(userData userData) {
+    public void addUser(UserData userData) {
         var statement = "INSERT INTO user (username, json) VALUES (?, ?)";
         var json = new Gson().toJson(userData);
         try {
@@ -63,7 +63,7 @@ public class UserDAOMysql implements userDataAccess{
     @Override
     public Boolean checkUserExists(String username) {
         try {
-            userData user = getUserData(username);
+            UserData user = getUserData(username);
             return user != null;
         } catch (Exception e) {
             return false;
