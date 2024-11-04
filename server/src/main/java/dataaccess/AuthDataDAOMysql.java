@@ -34,6 +34,7 @@ public class AuthDataDAOMysql implements authDataAccess{
         }
         catch (Exception e){
             System.out.println("could not add user");
+            return null;
         }
         return auth;
     }
