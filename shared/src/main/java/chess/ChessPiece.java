@@ -63,7 +63,7 @@ public class ChessPiece {
                     {1, 2}, {1, -2}, {-1, 2}, {-1, -2}});
 
             case ROOK -> new Rule(true, new int[][]{{1,0}, {-1, 0}, {0, 1}, {0, -1}});
-            case PAWN -> new pawnRule(false, new int[][]{{1, 0}, {-1, 0}, {1, -1}, {1, 1}, {-1, 1}, {-1, -1}});
+            case PAWN -> new PawnRule(false, new int[][]{{1, 0}, {-1, 0}, {1, -1}, {1, 1}, {-1, 1}, {-1, -1}});
         };
 
         ChessBoard boardCopy = board.deepCopy();
@@ -127,9 +127,9 @@ public class ChessPiece {
         }
     }
 
-    public class pawnRule extends Rule{
+    public class PawnRule extends Rule{
         private final int[][] movSet;
-        public pawnRule(boolean multiMove, int[][] moveSet){
+        public PawnRule(boolean multiMove, int[][] moveSet){
             super(multiMove, moveSet);
             this.movSet = moveSet;
         }
@@ -224,8 +224,12 @@ public class ChessPiece {
     }
 
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         ChessPiece that = (ChessPiece) o;
         return this.pieceType.equals(that.pieceType);
     }
