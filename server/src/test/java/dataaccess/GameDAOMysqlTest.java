@@ -39,6 +39,12 @@ class GameDAOMysqlTest {
     @Order(2)
     void checkGameExists() {
         assertDoesNotThrow(()->gameMemory.checkGameExists(101));
+
+    }
+
+    @Test
+    @Order(3)
+    void checkGameNotExists() {
         try{
             gameMemory.checkGameExists(103);
         }
@@ -48,10 +54,15 @@ class GameDAOMysqlTest {
     }
 
     @Test
-    @Order(3)
+    @Order(4)
     void addPlayer() {
         assertDoesNotThrow(()->gameMemory.addPlayer("WHITE", 101, "user1"));
         assertDoesNotThrow(()->gameMemory.addPlayer("BLACK", 101, "user1"));
+    }
+
+    @Test
+    @Order(5)
+    void addBadPlayer() {
 
         try{
             gameMemory.addPlayer("WHITE", 101, "user3");
@@ -62,7 +73,7 @@ class GameDAOMysqlTest {
     }
 
     @Test
-    @Order(4)
+    @Order(6)
     void getGames() throws DataAccessException{
         assertDoesNotThrow(()->gameMemory.getGames());
         ArrayList<GameData> games = gameMemory.getGames().get("games");
@@ -70,7 +81,7 @@ class GameDAOMysqlTest {
     }
 
     @Test
-    @Order(5)
+    @Order(7)
     void clear() {
         assertDoesNotThrow(()->gameMemory.clear());
     }

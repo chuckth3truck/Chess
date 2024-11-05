@@ -37,7 +37,7 @@ class UserDAOMysqlTest {
         try {
             assertDoesNotThrow(() -> userMemory.getUserData("user"));
             assertNotEquals(null, userMemory.getUserData("user"));
-            assertEquals(null, userMemory.getUserData("blue"));
+            assertNull(userMemory.getUserData("blue"));
         }
         catch (Exception e){
             System.out.println(e.getMessage());
@@ -45,16 +45,31 @@ class UserDAOMysqlTest {
 
     }
 
-
     @Test
     @Order(3)
-    void checkUserExists() {
-        assertEquals(true, userMemory.checkUserExists("user"));
-        assertEquals(false, userMemory.checkUserExists("blue"));
+    void badUserData() throws DataAccessException{
+
+        assertNull(userMemory.getUserData("blue"));
+
+
     }
+
 
     @Test
     @Order(4)
+    void checkUserExists() {
+        assertEquals(true, userMemory.checkUserExists("user"));
+    }
+
+    @Test
+    @Order(5)
+    void checkUserNotExists() {
+        assertEquals(false, userMemory.checkUserExists("blue"));
+    }
+
+
+    @Test
+    @Order(6)
     void clear() {
         assertDoesNotThrow(() -> userMemory.clear());
     }

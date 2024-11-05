@@ -39,19 +39,25 @@ class AuthDataDAOMysqlTest {
     void getUserByAuth() throws DataAccessException{
         assertDoesNotThrow(() -> authMemory.getUserByAuth(this.token));
         assertNotNull(authMemory.getUserByAuth(this.token));
-        assertNull(authMemory.getUserByAuth("this is not an auth token"));
 
     }
 
     @Test
     @Order(3)
+    void getUserByBadAuth() throws DataAccessException{
+        assertNull(authMemory.getUserByAuth("this is not an auth token"));
+
+    }
+
+    @Test
+    @Order(4)
     void deleteAuth() throws DataAccessException{
         authMemory.deleteAuth(this.token);
         assertNull(authMemory.getUserByAuth(this.token));
     }
 
     @Test
-    @Order(4)
+    @Order(5)
     void clear() {
         assertDoesNotThrow(()->authMemory.clear());
     }
