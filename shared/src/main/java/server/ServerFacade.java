@@ -19,9 +19,17 @@ public class ServerFacade {
     }
 
 
-    public AuthData registerUser(UserData user) throws ResponseException {
-        var path = "/user";
-        return this.makeRequest("POST", path, user, AuthData.class, null);
+    public AuthData registerUser(String username, String password, String email) throws ResponseException {
+        JsonObject newUser = new JsonObject();
+        newUser.addProperty("username", username);
+        newUser.addProperty("password", password);
+        newUser.addProperty("email", email);
+
+
+        AuthData response = this.makeRequest("POST", "/user", newUser, AuthData.class, null);
+        System.out.println(response);
+        return new AuthData("", "");
+
     }
 
     public AuthData login(String username, String password) throws ResponseException{

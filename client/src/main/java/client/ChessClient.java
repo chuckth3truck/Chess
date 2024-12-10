@@ -6,6 +6,7 @@ import model.AuthData;
 import model.GameData;
 import server.ServerFacade;
 import model.UserData;
+import ui.EscapeSequences;
 
 public class ChessClient {
 
@@ -111,7 +112,7 @@ public class ChessClient {
 
             var user = new UserData(username, password, email);
 
-            auth = serverFacade.registerUser(user);
+            auth = serverFacade.registerUser(username, password, email);
             isLoggedIn = true;
             System.out.println("Successfully registered and logged in.");
         } catch (Exception e) {
