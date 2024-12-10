@@ -1,11 +1,13 @@
 package client;
 
 import exception.ResponseException;
+import model.AuthData;
 import org.junit.jupiter.api.*;
 import server.Server;
 import server.ServerFacade;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 public class ServerFacadeTests {
@@ -18,12 +20,15 @@ public class ServerFacadeTests {
         server = new Server();
         var port = server.run(8080);
         System.out.println("Started test HTTP server on " + port);
+        serverFacade = new ServerFacade("http://localhost:8080");
+
     }
 
     @AfterAll
     static void stopServer() {
         try {
             serverFacade.clearData();
+            System.out.println("cleared");
         }
         catch (ResponseException e){
             System.out.println(e.getMessage());
@@ -31,31 +36,20 @@ public class ServerFacadeTests {
         server.stop();
     }
 
-
     @Test
-    public void loginTest() {
-//        assertDoesNotThrow(() -> serverFacade.login("user1", "pass"));
-        try {
-            serverFacade = new ServerFacade("http://localhost:8080");
+    @Order(1)
+    public void registerLoginTest() {
+        AuthData auth;
 
-            serverFacade.login("user1", "pass");
-        }
-        catch (ResponseException e){
-            System.out.println(e.getMessage());
-        }
-    }
+        assertDoesNotThrow(() -> serverFacade.registerUser("user1", "pass", "email1"));
+        assertDoesNotThrow(() -> serverFacade.login("user1", "pass"));
 
-    @Test
-    public void registerTest() {
-//        assertDoesNotThrow(() -> serverFacade.login("user1", "pass"));
-        try {
-            serverFacade = new ServerFacade("http://localhost:8080");
-
-            serverFacade.registerUser("user1", "pass", "email");
-        }
-        catch (ResponseException e){
-            System.out.println(e.getMessage());
-        }
+//        try {
+//            serverFacade.registerUser("user1", "pass", "email");
+//        }
+//        catch (ResponseException e){
+//            System.out.println(e.getMessage());
+//        }
     }
 
 }

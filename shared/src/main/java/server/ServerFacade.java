@@ -26,9 +26,7 @@ public class ServerFacade {
         newUser.addProperty("email", email);
 
 
-        AuthData response = this.makeRequest("POST", "/user", newUser, AuthData.class, null);
-        System.out.println(response);
-        return new AuthData("", "");
+        return this.makeRequest("POST", "/user", newUser, AuthData.class, null);
 
     }
 
@@ -38,7 +36,7 @@ public class ServerFacade {
         body.addProperty("password", password);
 
 
-        return this.makeRequest("POST", "/session", body.toString(), AuthData.class, null);
+        return this.makeRequest("POST", "/session", body, AuthData.class, null);
 
     }
 
@@ -60,19 +58,12 @@ public class ServerFacade {
         return response.games();
     }
 
-    public Object createGame(String auth, String gameName){
+    public Object createGame(String auth, String gameName) throws ResponseException{
         var path = "/game";
         JsonObject body = new JsonObject();
         body.addProperty("gameName", gameName);
 
-        try {
-            var response = this.makeRequest("POST", path, body, JsonObject.class, auth);
-            return response;
-        }
-        catch (Exception e){
-            return null;
-        }
-
+        return this.makeRequest("POST", path, body, JsonObject.class, auth);
     }
 
     public void playGame(int gameNumber, String color, String auth) throws Exception {
