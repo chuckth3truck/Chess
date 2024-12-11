@@ -105,11 +105,13 @@ public class ChessClient {
     private static void handleExceptions(ResponseException exception){
         if (exception.getErrorCode() == 401){
             System.out.println("unauthorized");
+            return;
         }
         if (exception.getErrorCode() == 403){
-            System.out.println("User already exists");
+            System.out.println("action failed");
+            return;
         }
-        System.out.println(exception.getErrorMessage());
+        System.out.println("action failed");
     }
 
     private static void handleLogin(Scanner scanner) {

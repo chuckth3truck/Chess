@@ -90,8 +90,13 @@ public class ServerFacade {
             http.connect();
             throwIfNotSuccessful(http);
             return readBody(http, responseClass);
-        } catch (Exception ex) {
-            throw new ResponseException(500, ex.getMessage());
+        } catch (Exception e) {
+            if (e instanceof ResponseException){
+
+                throw new ResponseException(((ResponseException) e).getErrorCode(), ((ResponseException) e).getErrorMessage());
+            }
+            else{
+            throw new ResponseException(500, e.getMessage());}
         }
     }
 
