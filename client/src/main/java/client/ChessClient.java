@@ -1,7 +1,5 @@
 package client;
-import java.lang.module.ResolutionException;
-import java.text.CollationElementIterator;
-import java.util.Arrays;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -11,7 +9,6 @@ import chess.ChessGame;
 import chess.ChessPiece;
 import chess.ChessPosition;
 import exception.ResponseException;
-import server.Server;
 
 import model.AuthData;
 import model.GameData;
@@ -24,7 +21,7 @@ public class ChessClient {
     private static boolean isLoggedIn = false;
     private static AuthData auth = null;
     private static final ServerFacade serverFacade = new ServerFacade("http://localhost:8080");
-    private static HashMap<Integer,GameData> gamesList = new HashMap<>();
+    private static final HashMap<Integer,GameData> gamesList = new HashMap<>();
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -104,14 +101,14 @@ public class ChessClient {
         }
     }
 
-    private static String handleExceptions(ResponseException exception){
+    private static void handleExceptions(ResponseException exception){
         if (exception.getErrorCode() == 401){
-            return "unauthorized";
+            System.out.println("unauthorized");
         }
         if (exception.getErrorCode() == 403){
-            return "User already exists";
+            System.out.println("User already exists");
         }
-        return "";
+        System.out.println(exception.getErrorMessage());
     }
 
     private static void handleLogin(Scanner scanner) {
@@ -126,7 +123,12 @@ public class ChessClient {
             System.out.println("Successfully logged in.");
             updateGamesList(null);
         } catch (Exception e) {
-            System.out.println("Login failed: " + e.getMessage());
+            if (e instanceof ResponseException){
+                handleExceptions((ResponseException) e);
+            }
+            else{
+                System.out.println("could not login");
+            }
         }
     }
     private static void handleRegister(Scanner scanner) {
@@ -145,7 +147,12 @@ public class ChessClient {
             isLoggedIn = true;
             System.out.println("Successfully registered and logged in.");
         } catch (Exception e) {
-            System.out.println("Registration failed: " + e.getMessage());
+            if (e instanceof ResponseException){
+                handleExceptions((ResponseException) e);
+            }
+            else{
+                System.out.println("could not register");
+            }
         }
     }
 
@@ -156,7 +163,12 @@ public class ChessClient {
             auth = null;
             System.out.println("Successfully logged out.");
         } catch (Exception e) {
-            System.out.println("Logout failed: " + e.getMessage());
+            if (e instanceof ResponseException){
+                handleExceptions((ResponseException) e);
+            }
+            else{
+                System.out.println("could not logout");
+            }
         }
     }
 
@@ -168,7 +180,12 @@ public class ChessClient {
             serverFacade.createGame(gameName, auth.authToken());
             System.out.println("Game created successfully.");
         } catch (Exception e) {
-            System.out.println("Failed to create game: " + e.getMessage());
+            if (e instanceof ResponseException){
+                handleExceptions((ResponseException) e);
+            }
+            else{
+                System.out.println("could not create game");
+            }
         }
     }
 
@@ -178,12 +195,9 @@ public class ChessClient {
        gamesList.clear();
 
         for (GameData game : games){
-            System.out.println(game.gameID() + " " + game.gameName());
             gamesList.put(game.gameID(), game);
 
         }
-        System.out.println(gamesList.keySet());
-
     }
 
     private static void handleListGames() {
@@ -197,7 +211,12 @@ public class ChessClient {
                         + ", BLACK: " + game.blackUsername() + "\n");
             }
         } catch (Exception e) {
-            System.out.println("Failed to list games: " + e.getMessage());
+            if (e instanceof ResponseException){
+                handleExceptions((ResponseException) e);
+            }
+            else{
+                System.out.println("could not list games");
+            }
         }
     }
 
@@ -216,9 +235,16 @@ public class ChessClient {
         try {
             serverFacade.playGame(gameNumber, color, auth.authToken());
             updateGamesList(gameNumber);
-            drawChessBoard(gamesList.get(gameNumber).game().getBoard());
+
+            drawChessBoard(gamesList.get(gameNumber).game().getBoard(), color.equals("white"));
+
         } catch (Exception e) {
-            System.out.println("Failed to join game: " + e.getMessage());
+            if (e instanceof ResponseException){
+                handleExceptions((ResponseException) e);
+            }
+            else{
+                System.out.println("could not play game");
+            }
         }
     }
 
@@ -227,7 +253,7 @@ public class ChessClient {
         int gameNumber = Integer.parseInt(scanner.nextLine().trim()) + 100;
 
         try {
-            drawChessBoard(gamesList.get(gameNumber).game().getBoard()); // Observing as white perspective by default
+            drawChessBoard(gamesList.get(gameNumber).game().getBoard(), true); // Observing as white perspective by default
         } catch (Exception e) {
             System.out.println("Failed to observe game: " + e.getMessage());
         }
@@ -243,7 +269,7 @@ public class ChessClient {
         }
     }
 
-    private static void drawChessBoard(ChessBoard board) {
+    private static void drawChessBoard(ChessBoard board, boolean isWhite) {
 //        String[] pieces = {"R", "N", "B", "Q", "K", "B", "N", "R"};
 //        String empty = " ";
 //        System.out.println("\nChess Board:");
@@ -255,6 +281,13 @@ public class ChessClient {
 //            }
 //            System.out.println();
 //        }
+
+        if (isWhite){
+            board.resetBoard();
+        }
+        else{
+            board.resetBlackBoard();
+        }
 
         String columnLabel = EscapeSequences.SET_BG_COLOR_LIGHT_GREY+ EscapeSequences.EMPTY +
                 String.format("%-4s", "A") + String.format("%-3s", "B") + String.format("%-4s", "C")
@@ -278,9 +311,9 @@ public class ChessClient {
                     System.out.print(EscapeSequences.EMPTY); // Empty square
                 }
                 else if (piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
-                    System.out.print(getPieceSequence(piece));
+                    System.out.print(getWhitePieces(piece));
                 } else if (piece.getTeamColor() == ChessGame.TeamColor.BLACK) {
-                    System.out.print(getPieceSequence(piece));
+                    System.out.print(getWBlackPieces(piece));
                 }
             }
             System.out.println("\u001B[0m" + " " + (8 - row));
@@ -288,16 +321,24 @@ public class ChessClient {
         System.out.println(columnLabel);
     }
 
-    private static String getPieceSequence(ChessPiece piece){
+    private static String getWhitePieces(ChessPiece piece){
         String pieceSequence = " ";
-        switch (piece.toString()){
-            case "K" -> pieceSequence = EscapeSequences.WHITE_KING;
-            case "R" -> pieceSequence = EscapeSequences.WHITE_ROOK;
-            case "Q" -> pieceSequence = EscapeSequences.WHITE_QUEEN;
-            case "P" -> pieceSequence = EscapeSequences.WHITE_PAWN;
-            case "B" -> pieceSequence = EscapeSequences.WHITE_BISHOP;
-            case "N" -> pieceSequence = EscapeSequences.WHITE_KNIGHT;
+        switch (piece.toString().toLowerCase()) {
+            case "k" -> pieceSequence = EscapeSequences.WHITE_KING;
+            case "r" -> pieceSequence = EscapeSequences.WHITE_ROOK;
+            case "q" -> pieceSequence = EscapeSequences.WHITE_QUEEN;
+            case "p" -> pieceSequence = EscapeSequences.WHITE_PAWN;
+            case "b" -> pieceSequence = EscapeSequences.WHITE_BISHOP;
+            case "n" -> pieceSequence = EscapeSequences.WHITE_KNIGHT;
 
+        }
+
+        return pieceSequence;
+    }
+
+    private static String getWBlackPieces(ChessPiece piece) {
+        String pieceSequence = " ";
+        switch (piece.toString().toLowerCase()){
             case "k" -> pieceSequence = EscapeSequences.BLACK_KING;
             case "r" -> pieceSequence = EscapeSequences.BLACK_ROOK;
             case "q" -> pieceSequence = EscapeSequences.BLACK_QUEEN;

@@ -59,6 +59,21 @@ public class ChessBoard {
         }
     }
 
+    public void resetBlackBoard() {
+        ChessPiece.PieceType[] pieces = new ChessPiece.PieceType[]{ChessPiece.PieceType.ROOK,
+                ChessPiece.PieceType.KNIGHT, ChessPiece.PieceType.BISHOP,
+                ChessPiece.PieceType.QUEEN, ChessPiece.PieceType.KING,
+                ChessPiece.PieceType.BISHOP, ChessPiece.PieceType.KNIGHT, ChessPiece.PieceType.ROOK};
+
+        for (int i = 0; i < 8; i++) {
+            board[7][i] = new ChessPiece(ChessGame.TeamColor.WHITE, pieces[i]);
+            board[0][i] = new ChessPiece(ChessGame.TeamColor.BLACK, pieces[i]);
+
+            board[6][i] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
+            board[1][i] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN);
+        }
+    }
+
     public String toString() {
         StringBuilder ret = new StringBuilder();
         ret.append("\n");
