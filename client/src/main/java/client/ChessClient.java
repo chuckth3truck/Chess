@@ -107,10 +107,6 @@ public class ChessClient {
             System.out.println("unauthorized");
             return;
         }
-        if (exception.getErrorCode() == 403){
-            System.out.println("action failed");
-            return;
-        }
         System.out.println("action failed");
     }
 

@@ -12,33 +12,33 @@ public class Server {
 
     public Server(){
         AuthDataAccess authMemory;
-        try{
+//        try{
             authMemory = new AuthDataDAOMysql();
             System.out.println("using mysql auth");
 
-        }
-        catch (Exception e){
-            authMemory = new AuthDataDAOMemory();
-        }
+//        }
+//        catch (Exception e){
+//            authMemory = new AuthDataDAOMemory();
+//        }
 
         UserDataAccess userMemory;
-        try{
+//        try{
             userMemory = new UserDAOMysql();
             System.out.println("using mysql user");
-        }
-        catch (Exception e){
-            userMemory = new UserDAOMemory();
-        }
+//        }
+//        catch (Exception e){
+//            userMemory = new UserDAOMemory();
+//        }
         GameDataAccess gameMemory;
-        try{
+//        try{
             gameMemory = new GameDAOMysql();
             System.out.println("using mysql game");
 
-        }
-        catch (Exception e){
-            gameMemory = new GameDAOMemory();
-            System.out.println(e.getMessage());
-        }
+//        }
+//        catch (Exception e){
+//            gameMemory = new GameDAOMemory();
+//            System.out.println(e.getMessage());
+//        }
 
         this.user = new UserService(userMemory, authMemory);
         this.game = new GameService(gameMemory, authMemory);

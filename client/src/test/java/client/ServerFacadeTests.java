@@ -8,11 +8,9 @@ import org.junit.jupiter.api.*;
 import server.Server;
 import server.ServerFacade;
 
-import java.sql.PreparedStatement;
 import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 public class ServerFacadeTests {
