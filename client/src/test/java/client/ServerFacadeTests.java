@@ -2,10 +2,14 @@ package client;
 
 import exception.ResponseException;
 import model.AuthData;
+import model.GameData;
 import org.junit.jupiter.api.*;
 
 import server.Server;
 import server.ServerFacade;
+
+import java.sql.PreparedStatement;
+import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -27,30 +31,48 @@ public class ServerFacadeTests {
 
     @AfterAll
     static void stopServer() {
-        try {
-            serverFacade.clearData();
-            System.out.println("cleared");
-        }
-        catch (ResponseException e){
-            System.out.println(e.getMessage());
-        }
         server.stop();
     }
 
     @Test
     @Order(1)
     public void registerLoginTest() {
-        AuthData auth;
+        Random random = new Random();
 
-        assertDoesNotThrow(() -> serverFacade.registerUser("user1", "pass", "email1"));
+
+        assertDoesNotThrow(() -> serverFacade.registerUser(String.format("%d", random.nextInt()), "pass", "email1"));
         assertDoesNotThrow(() -> serverFacade.login("user1", "pass"));
 
-//        try {
-//            serverFacade.registerUser("user1", "pass", "email");
-//        }
-//        catch (ResponseException e){
-//            System.out.println(e.getMessage());
-//        }
+
     }
+
+    @Test
+    @Order(2)
+    public void createListGames() throws ResponseException{
+
+        AuthData auth = serverFacade.login("user1", "pass");
+        assertDoesNotThrow(() -> serverFacade.createGame("a", auth.authToken()));
+        assertDoesNotThrow(() -> serverFacade.listGames(auth.authToken()));
+        try {
+            GameData[] games = serverFacade.listGames(auth.authToken());
+            assert games.length > 0;
+        }
+        catch (Exception e){
+            assert false;
+        }
+    }
+
+    @Test
+    @Order(4)
+    public void playGame() throws ResponseException{
+        AuthData auth = serverFacade.login("user1", "pass");
+        assertDoesNotThrow(() -> serverFacade.playGame(101, "white", auth.authToken()));
+    }
+
+
+
+
+
+
 
 }
