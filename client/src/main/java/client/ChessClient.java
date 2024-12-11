@@ -19,11 +19,12 @@ public class ChessClient {
 
     private static boolean isLoggedIn = false;
     private static AuthData auth = null;
-    private static final ServerFacade serverFacade = new ServerFacade("http://localhost:8080");
+    private static ServerFacade serverFacade;
     private static final HashMap<Integer,GameData> gamesList = new HashMap<>();
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
+        serverFacade = new ServerFacade(args[0]);
 
         while (true) {
             if (!isLoggedIn) {
