@@ -178,10 +178,11 @@ public class ChessClient {
        gamesList.clear();
 
         for (GameData game : games){
-            if (!gamesList.containsKey(game.gameID())){
-                gamesList.put(game.gameID(), game);
-            }
+            System.out.println(game.gameID() + " " + game.gameName());
+            gamesList.put(game.gameID(), game);
+
         }
+        System.out.println(gamesList.keySet());
 
     }
 

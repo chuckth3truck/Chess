@@ -23,7 +23,7 @@ public class GameDAOMysql implements GameDataAccess {
             """
     };
 
-    int numGames = 1;
+    int numGames = getGames().get("games").size();
 
     public GameDAOMysql() throws DataAccessException{
         DatabaseManager.configureDatabase(createStatements);
@@ -55,8 +55,18 @@ public class GameDAOMysql implements GameDataAccess {
     @Override
     public int createGame(String gameName) {
         var statement = "INSERT INTO game (gameID, json) VALUES (?, ?)";
+        try {
+            numGames = getGames().get("games").size() + 1;
+        }
+        catch (Exception e ){
+            System.out.println("could not add");
+            numGames = 0;
+        }
+
         int gameID = numGames + 100;
-        numGames += 1;
+        System.out.println(gameID);
+
+//        System.out.println(numGames);
         GameData game = new GameData(gameID, null, null, gameName, new ChessGame());
         try {
             DatabaseManager.executeUpdate(statement, gameID, new Gson().toJson(game));
