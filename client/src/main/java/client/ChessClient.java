@@ -22,6 +22,7 @@ public class ChessClient {
     private static ServerFacade serverFacade;
     private static final HashMap<Integer,GameData> gamesList = new HashMap<>();
 
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         serverFacade = new ServerFacade(args[0]);
