@@ -10,7 +10,7 @@ public class Server {
     private final GameService game;
 
 
-    public Server(){
+    public Server()throws Exception{
         AuthDataAccess authMemory;
 //        try{
             authMemory = new AuthDataDAOMysql();

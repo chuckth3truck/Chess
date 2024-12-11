@@ -22,7 +22,7 @@ public class DatabaseTests {
 
 
     @BeforeAll
-    public static void startServer() {
+    public static void startServer() throws Exception{
         server = new Server();
         var port = server.run(0);
         System.out.println("Started test HTTP server on " + port);
@@ -44,7 +44,7 @@ public class DatabaseTests {
     @Test
     @DisplayName("Persistence Test")
     @Order(1)
-    public void persistenceTest() {
+    public void persistenceTest() throws Exception{
         int initialRowCount = getDatabaseRows();
 
         TestAuthResult regResult = serverFacade.register(TEST_USER);
