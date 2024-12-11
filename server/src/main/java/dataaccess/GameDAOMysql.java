@@ -23,10 +23,11 @@ public class GameDAOMysql implements GameDataAccess {
             """
     };
 
-    int numGames = getGames().get("games").size();
+    int numGames = -1;
 
     public GameDAOMysql() throws DataAccessException{
         DatabaseManager.configureDatabase(createStatements);
+        numGames = getGames().get("games").size();
     }
 
     @Override
