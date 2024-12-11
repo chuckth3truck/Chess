@@ -3,6 +3,7 @@ package client;
 import exception.ResponseException;
 import model.AuthData;
 import org.junit.jupiter.api.*;
+
 import server.Server;
 import server.ServerFacade;
 

@@ -1,10 +1,15 @@
 package client;
 import java.lang.module.ResolutionException;
+import java.text.CollationElementIterator;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
+import chess.ChessBoard;
+import chess.ChessGame;
+import chess.ChessPiece;
+import chess.ChessPosition;
 import exception.ResponseException;
 import server.Server;
 
@@ -119,6 +124,7 @@ public class ChessClient {
             auth = serverFacade.login(username, password);
             isLoggedIn = true;
             System.out.println("Successfully logged in.");
+            updateGamesList(null);
         } catch (Exception e) {
             System.out.println("Login failed: " + e.getMessage());
         }
@@ -169,9 +175,7 @@ public class ChessClient {
     private static void updateGamesList(Integer gameId) throws ResponseException{
         GameData[] games = serverFacade.listGames(auth.authToken());
 
-        if (gameId != null){
-            gamesList.remove(gameId);
-        }
+       gamesList.clear();
 
         for (GameData game : games){
             if (!gamesList.containsKey(game.gameID())){
@@ -211,7 +215,7 @@ public class ChessClient {
         try {
             serverFacade.playGame(gameNumber, color, auth.authToken());
             updateGamesList(gameNumber);
-            drawChessBoard(color.equals("white"));
+            drawChessBoard(gamesList.get(gameNumber).game().getBoard());
         } catch (Exception e) {
             System.out.println("Failed to join game: " + e.getMessage());
         }
@@ -219,11 +223,10 @@ public class ChessClient {
 
     private static void handleObserveGame(Scanner scanner) {
         System.out.print("Enter game number: ");
-        int gameNumber = Integer.parseInt(scanner.nextLine().trim());
+        int gameNumber = Integer.parseInt(scanner.nextLine().trim()) + 100;
 
         try {
-            serverFacade.observeGame(gameNumber, auth.authToken());
-            drawChessBoard(true); // Observing as white perspective by default
+            drawChessBoard(gamesList.get(gameNumber).game().getBoard()); // Observing as white perspective by default
         } catch (Exception e) {
             System.out.println("Failed to observe game: " + e.getMessage());
         }
@@ -239,18 +242,70 @@ public class ChessClient {
         }
     }
 
-    private static void drawChessBoard(boolean isWhitePerspective) {
-        String[] pieces = {"R", "N", "B", "Q", "K", "B", "N", "R"};
-        String empty = " ";
-        System.out.println("\nChess Board:");
+    private static void drawChessBoard(ChessBoard board) {
+//        String[] pieces = {"R", "N", "B", "Q", "K", "B", "N", "R"};
+//        String empty = " ";
+//        System.out.println("\nChess Board:");
+//
+//        for (int i = 0; i < 8; i++) {
+//            for (int j = 0; j < 8; j++) {
+//                boolean lightSquare = (i + j) % 2 == 0;
+//                System.out.print(lightSquare ? " " : "#");
+//            }
+//            System.out.println();
+//        }
 
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                boolean lightSquare = (i + j) % 2 == 0;
-                System.out.print(lightSquare ? " " : "#");
+        String columnLabel = EscapeSequences.SET_BG_COLOR_LIGHT_GREY+ EscapeSequences.EMPTY +
+                String.format("%-4s", "A") + String.format("%-3s", "B") + String.format("%-4s", "C")
+                + String.format("%-3s", "D") + String.format("%-4s", "E") + String.format("%-4s", "F")
+                + String.format("%-3s", "G") + String.format("%-4s", "H") + EscapeSequences.RESET_BG_COLOR;
+
+
+        System.out.println(columnLabel);
+        for (int row = 0; row < 8; row++) {
+            System.out.print((8 - row) + " ");
+            for (int col = 0; col < 8; col++) {
+                if ((row + col) % 2 == 0) {
+                    System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREEN);
+                }
+                else{
+                    System.out.print(EscapeSequences.SET_BG_COLOR_BLACK);
+                }
+
+                ChessPiece piece = board.getPiece(new ChessPosition(row+1, col+1));
+                if (piece == null) {
+                    System.out.print(EscapeSequences.EMPTY); // Empty square
+                }
+                else if (piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
+                    System.out.print(getPieceSequence(piece));
+                } else if (piece.getTeamColor() == ChessGame.TeamColor.BLACK) {
+                    System.out.print(getPieceSequence(piece));
+                }
             }
-            System.out.println();
+            System.out.println("\u001B[0m" + " " + (8 - row));
         }
+        System.out.println(columnLabel);
+    }
+
+    private static String getPieceSequence(ChessPiece piece){
+        String pieceSequence = " ";
+        switch (piece.toString()){
+            case "K" -> pieceSequence = EscapeSequences.WHITE_KING;
+            case "R" -> pieceSequence = EscapeSequences.WHITE_ROOK;
+            case "Q" -> pieceSequence = EscapeSequences.WHITE_QUEEN;
+            case "P" -> pieceSequence = EscapeSequences.WHITE_PAWN;
+            case "B" -> pieceSequence = EscapeSequences.WHITE_BISHOP;
+            case "N" -> pieceSequence = EscapeSequences.WHITE_KNIGHT;
+
+            case "k" -> pieceSequence = EscapeSequences.BLACK_KING;
+            case "r" -> pieceSequence = EscapeSequences.BLACK_ROOK;
+            case "q" -> pieceSequence = EscapeSequences.BLACK_QUEEN;
+            case "p" -> pieceSequence = EscapeSequences.BLACK_PAWN;
+            case "b" -> pieceSequence = EscapeSequences.BLACK_BISHOP;
+            case "n" -> pieceSequence = EscapeSequences.BLACK_KNIGHT;
+        }
+
+        return pieceSequence;
     }
 
 

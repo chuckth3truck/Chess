@@ -75,13 +75,6 @@ public class ServerFacade {
         makeRequest("PUT", "/game", body, JsonObject.class, auth);
     }
 
-    public void observeGame(int gameNumber, String auth) throws Exception {
-        JsonObject body = new JsonObject();
-        body.addProperty("gameNumber", gameNumber);
-
-        makeRequest("PUT", "/game", body, null, auth);
-    }
-
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass, String auth) throws ResponseException {
         try {
             URL url = (new URI(serverUrl + path)).toURL();
