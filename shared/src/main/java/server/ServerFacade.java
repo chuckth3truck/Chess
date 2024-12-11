@@ -41,7 +41,7 @@ public class ServerFacade {
     }
 
     public void logout(String auth) throws ResponseException {
-        var path = "/Session";
+        var path = "/session";
         this.makeRequest("DELETE", path, null, null, auth);
     }
 
@@ -50,20 +50,21 @@ public class ServerFacade {
         this.makeRequest("DELETE", path, null, null, null);
     }
 
-    public GameData[] listGames() throws ResponseException {
-        var path = "/pet";
+    public GameData[] listGames(String auth) throws ResponseException {
+        var path = "/game";
         record listGameResponse(GameData[] games) {
         }
-        var response = this.makeRequest("GET", path, null, listGameResponse.class, null);
+
+        var response = this.makeRequest("GET", path, null, listGameResponse.class, auth);
         return response.games();
     }
 
-    public Object createGame(String auth, String gameName) throws ResponseException{
-        var path = "/game";
-        JsonObject body = new JsonObject();
-        body.addProperty("gameName", gameName);
+    public Object createGame(String gameName, String auth) throws ResponseException{
 
-        return this.makeRequest("POST", path, body, JsonObject.class, auth);
+        JsonObject gameDetails = new JsonObject();
+        gameDetails.addProperty("gameName", gameName);
+
+        return this.makeRequest("POST", "/game", gameDetails, JsonObject.class, auth);
     }
 
     public void playGame(int gameNumber, String color, String auth) throws Exception {
@@ -71,14 +72,14 @@ public class ServerFacade {
         body.addProperty("gameNumber", gameNumber);
         body.addProperty("color", color);
 
-        makeRequest("PUT", "/game", body.toString(), JsonObject.class, auth);
+        makeRequest("PUT", "/game", body, JsonObject.class, auth);
     }
 
     public void observeGame(int gameNumber, String auth) throws Exception {
         JsonObject body = new JsonObject();
         body.addProperty("gameNumber", gameNumber);
 
-        makeRequest("PUT", "/game", body.toString(), null, auth);
+        makeRequest("PUT", "/game", body, null, auth);
     }
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass, String auth) throws ResponseException {
@@ -87,9 +88,12 @@ public class ServerFacade {
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod(method);
             http.setDoOutput(true);
+            if (auth != null){
+                http.setRequestProperty("Authorization", auth);
+            }
 
             writeBody(request, http);
-            writeAuth(auth, http);
+//            writeAuth(auth, http);
             http.connect();
             throwIfNotSuccessful(http);
             return readBody(http, responseClass);

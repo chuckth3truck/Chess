@@ -1,6 +1,10 @@
 package client;
+import java.lang.module.ResolutionException;
 import java.util.Arrays;
 import java.util.Scanner;
+
+import exception.ResponseException;
+import server.Server;
 
 import model.AuthData;
 import model.GameData;
@@ -12,10 +16,12 @@ public class ChessClient {
 
     private static boolean isLoggedIn = false;
     private static AuthData auth = null;
-    private static ServerFacade serverFacade = new ServerFacade("http://localhost:8080");
+    private static final ServerFacade serverFacade = new ServerFacade("http://localhost:8080");
+    private static GameData[] gamesList;
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
+
         while (true) {
             if (!isLoggedIn) {
                 displayPreloginUI(scanner);
@@ -26,9 +32,8 @@ public class ChessClient {
     }
 
     private static void displayPreloginUI(Scanner scanner) {
-        System.out.println("\n== Chess Client - Prelogin ==");
         System.out.println("Available commands: Help, Login, Register, Quit");
-        System.out.print("Enter command: ");
+        System.out.print("[LOGGED OUT] >>> ");
         String command = scanner.nextLine().trim().toLowerCase();
 
         switch (command) {
@@ -51,9 +56,8 @@ public class ChessClient {
     }
 
     private static void displayPostloginUI(Scanner scanner) {
-        System.out.println("\n== Chess Client - Postlogin ==");
         System.out.println("Available commands: Help, Logout, Create Game, List Games, Play Game, Observe Game");
-        System.out.print("Enter command: ");
+        System.out.print("[LOGGED IN] >>> ");
         String command = scanner.nextLine().trim().toLowerCase();
 
         switch (command) {
@@ -82,8 +86,22 @@ public class ChessClient {
 
     private static void displayHelp() {
         System.out.println("\nHelp - Available Commands:");
-        System.out.println("Prelogin Commands: Help, Login, Register, Quit");
-        System.out.println("Postlogin Commands: Help, Logout, Create Game, List Games, Play Game, Observe Game");
+        if (isLoggedIn){
+            System.out.println("Commands: Help, Logout, Create Game, List Games, Play Game, Observe Game");
+        }
+        else {
+            System.out.println("Commands: Help, Login, Register, Quit");
+        }
+    }
+
+    private static String handleExceptions(ResponseException exception){
+        if (exception.getErrorCode() == 401){
+            return "unauthorized";
+        }
+        if (exception.getErrorCode() == 403){
+            return "User already exists";
+        }
+        return "";
     }
 
     private static void handleLogin(Scanner scanner) {
@@ -93,7 +111,7 @@ public class ChessClient {
         String password = scanner.nextLine().trim();
 
         try {
-            serverFacade.login(username, password);
+            auth = serverFacade.login(username, password);
             isLoggedIn = true;
             System.out.println("Successfully logged in.");
         } catch (Exception e) {
@@ -145,8 +163,12 @@ public class ChessClient {
 
     private static void handleListGames() {
         try {
-            GameData[] gamesList = serverFacade.listGames();
-            System.out.println("Available games:\n" + Arrays.toString(gamesList));
+            gamesList = serverFacade.listGames(auth.authToken());
+            System.out.println("Available games:\n" );
+            for (GameData game: gamesList){
+                System.out.println(game.gameID() + ", " + game.gameName() + ", WHITE: " + game.whiteUsername()
+                        + ", BLACK: " + game.blackUsername() + "\n");
+            }
         } catch (Exception e) {
             System.out.println("Failed to list games: " + e.getMessage());
         }
