@@ -13,7 +13,6 @@ import exception.ResponseException;
 import model.AuthData;
 import model.GameData;
 import server.ServerFacade;
-import model.UserData;
 import ui.EscapeSequences;
 
 public class ChessClient {
@@ -28,14 +27,14 @@ public class ChessClient {
 
         while (true) {
             if (!isLoggedIn) {
-                displayPreloginUI(scanner);
+                displayPreLoginUI(scanner);
             } else {
-                displayPostloginUI(scanner);
+                displayPostLoginUI(scanner);
             }
         }
     }
 
-    private static void displayPreloginUI(Scanner scanner) {
+    private static void displayPreLoginUI(Scanner scanner) {
         System.out.println("Available commands: Help, Login, Register, Quit");
         System.out.print("[LOGGED OUT] >>> ");
         String command = scanner.nextLine().trim().toLowerCase();
@@ -59,7 +58,7 @@ public class ChessClient {
         }
     }
 
-    private static void displayPostloginUI(Scanner scanner) {
+    private static void displayPostLoginUI(Scanner scanner) {
         System.out.println("Available commands: Help, Logout, Create Game, List Games, Play Game, Observe Game, Clear");
         System.out.print("[LOGGED IN] >>> ");
         String command = scanner.nextLine().trim().toLowerCase();
@@ -121,7 +120,7 @@ public class ChessClient {
             auth = serverFacade.login(username, password);
             isLoggedIn = true;
             System.out.println("Successfully logged in.");
-            updateGamesList(null);
+            updateGamesList();
         } catch (Exception e) {
             if (e instanceof ResponseException){
                 handleExceptions((ResponseException) e);
@@ -140,8 +139,6 @@ public class ChessClient {
         String email = scanner.nextLine().trim();
 
         try {
-
-            var user = new UserData(username, password, email);
 
             auth = serverFacade.registerUser(username, password, email);
             isLoggedIn = true;
@@ -189,7 +186,7 @@ public class ChessClient {
         }
     }
 
-    private static void updateGamesList(Integer gameId) throws ResponseException{
+    private static void updateGamesList() throws ResponseException{
         GameData[] games = serverFacade.listGames(auth.authToken());
 
        gamesList.clear();
@@ -202,7 +199,7 @@ public class ChessClient {
 
     private static void handleListGames() {
         try {
-            updateGamesList(null);
+            updateGamesList();
             System.out.println("Available games:\n" );
             for (Map.Entry<Integer, GameData> entry: gamesList.entrySet()){
                 GameData game = entry.getValue();
@@ -234,9 +231,9 @@ public class ChessClient {
 
         try {
             serverFacade.playGame(gameNumber, color, auth.authToken());
-            updateGamesList(gameNumber);
+            updateGamesList();
 
-            drawChessBoard(gamesList.get(gameNumber).game().getBoard(), color.equals("white"));
+            drawChessBoard(gamesList.get(gameNumber).game().getBoard(), color.equals("black"));
 
         } catch (Exception e) {
             if (e instanceof ResponseException){
@@ -253,7 +250,7 @@ public class ChessClient {
         int gameNumber = Integer.parseInt(scanner.nextLine().trim()) + 100;
 
         try {
-            drawChessBoard(gamesList.get(gameNumber).game().getBoard(), true); // Observing as white perspective by default
+            drawChessBoard(gamesList.get(gameNumber).game().getBoard(), false); // Observing as white perspective by default
         } catch (Exception e) {
             System.out.println("Failed to observe game: " + e.getMessage());
         }
@@ -270,17 +267,6 @@ public class ChessClient {
     }
 
     private static void drawChessBoard(ChessBoard board, boolean isWhite) {
-//        String[] pieces = {"R", "N", "B", "Q", "K", "B", "N", "R"};
-//        String empty = " ";
-//        System.out.println("\nChess Board:");
-//
-//        for (int i = 0; i < 8; i++) {
-//            for (int j = 0; j < 8; j++) {
-//                boolean lightSquare = (i + j) % 2 == 0;
-//                System.out.print(lightSquare ? " " : "#");
-//            }
-//            System.out.println();
-//        }
 
         if (isWhite){
             board.resetBoard();

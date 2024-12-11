@@ -64,7 +64,6 @@ public class GameDAOMysql implements GameDataAccess {
         }
 
         int gameID = numGames + 100;
-        System.out.println(gameID);
 
 //        System.out.println(numGames);
         GameData game = new GameData(gameID, null, null, gameName, new ChessGame());
