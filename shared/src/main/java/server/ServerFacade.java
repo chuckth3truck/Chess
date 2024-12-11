@@ -52,10 +52,10 @@ public class ServerFacade {
 
     public GameData[] listGames(String auth) throws ResponseException {
         var path = "/game";
-        record listGameResponse(GameData[] games) {
+        record ListGameResponse(GameData[] games) {
         }
 
-        var response = this.makeRequest("GET", path, null, listGameResponse.class, auth);
+        var response = this.makeRequest("GET", path, null, ListGameResponse.class, auth);
         return response.games();
     }
 
@@ -108,12 +108,6 @@ public class ServerFacade {
             try (OutputStream reqBody = http.getOutputStream()) {
                 reqBody.write(reqData.getBytes());
             }
-        }
-    }
-
-    private static void writeAuth(String auth, HttpURLConnection http) throws IOException{
-        if (auth != null){
-            http.setRequestProperty("Authorization", auth);
         }
     }
 

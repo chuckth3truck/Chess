@@ -2,14 +2,11 @@ package client;
 
 import exception.ResponseException;
 import model.AuthData;
-import model.GameData;
-import org.glassfish.grizzly.utils.EchoFilter;
 import org.junit.jupiter.api.*;
 
 import server.Server;
 import server.ServerFacade;
 
-import java.sql.PreparedStatement;
 import java.util.Random;
 
 import static java.lang.Math.abs;
@@ -21,7 +18,7 @@ public class ServerFacadeTests {
     private static Server server;
     private static ServerFacade serverFacade;
     private  static int randNum;
-    private static final String[] names = new String[]{"a", "b", "c", "d", "e", "f", "g", "h", "i", "j"};
+    private static final String[] NAMES = new String[]{"a", "b", "c", "d", "e", "f", "g", "h", "i", "j"};
 
     @BeforeAll
     public static void init() {
@@ -99,7 +96,7 @@ public class ServerFacadeTests {
     @Order(5)
     public void createGames() throws ResponseException, Exception{
         AuthData auth = getAuth();
-        assertDoesNotThrow(() -> serverFacade.createGame(names[randNum%10], auth.authToken()));
+        assertDoesNotThrow(() -> serverFacade.createGame(NAMES[randNum%10], auth.authToken()));
     }
 
     @Test
@@ -107,7 +104,7 @@ public class ServerFacadeTests {
     public void badCreateGames() {
         boolean except = false;
         try{
-            serverFacade.createGame(names[randNum%10], null);
+            serverFacade.createGame(NAMES[randNum%10], null);
         }
         catch (Exception e){
             except = true;

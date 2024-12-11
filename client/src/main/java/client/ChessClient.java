@@ -20,7 +20,7 @@ public class ChessClient {
     private static boolean isLoggedIn = false;
     private static AuthData auth = null;
     private static ServerFacade serverFacade;
-    private static final HashMap<Integer,GameData> gamesList = new HashMap<>();
+    private static final HashMap<Integer,GameData> GAMES_LIST = new HashMap<>();
 
 
     public static void main(String[] args) {
@@ -190,10 +190,10 @@ public class ChessClient {
     private static void updateGamesList() throws ResponseException{
         GameData[] games = serverFacade.listGames(auth.authToken());
 
-       gamesList.clear();
+       GAMES_LIST.clear();
 
         for (GameData game : games){
-            gamesList.put(game.gameID(), game);
+            GAMES_LIST.put(game.gameID(), game);
 
         }
     }
@@ -202,7 +202,7 @@ public class ChessClient {
         try {
             updateGamesList();
             System.out.println("Available games:\n" );
-            for (Map.Entry<Integer, GameData> entry: gamesList.entrySet()){
+            for (Map.Entry<Integer, GameData> entry: GAMES_LIST.entrySet()){
                 GameData game = entry.getValue();
 
                 System.out.println("[" + game.gameID()%10 + "] " + game.gameName() + ", WHITE: " + game.whiteUsername()
@@ -225,7 +225,7 @@ public class ChessClient {
         System.out.print("Enter color (white/black): ");
         String color = scanner.nextLine().trim().toLowerCase();
 
-        if (!gamesList.containsKey(gameNumber) && !gamesList.isEmpty()){
+        if (!GAMES_LIST.containsKey(gameNumber) && !GAMES_LIST.isEmpty()){
             System.out.println(gameNumber + " is not a valid game Number");
             return;
         }
@@ -234,7 +234,7 @@ public class ChessClient {
             serverFacade.playGame(gameNumber, color, auth.authToken());
             updateGamesList();
 
-            drawChessBoard(gamesList.get(gameNumber).game().getBoard(), color.equals("black"));
+            drawChessBoard(GAMES_LIST.get(gameNumber).game().getBoard(), color.equals("black"));
 
         } catch (Exception e) {
             if (e instanceof ResponseException){
@@ -251,7 +251,7 @@ public class ChessClient {
         int gameNumber = Integer.parseInt(scanner.nextLine().trim()) + 100;
 
         try {
-            drawChessBoard(gamesList.get(gameNumber).game().getBoard(), false); // Observing as white perspective by default
+            drawChessBoard(GAMES_LIST.get(gameNumber).game().getBoard(), false); // Observing as white perspective by default
         } catch (Exception e) {
             System.out.println("Failed to observe game: " + e.getMessage());
         }
