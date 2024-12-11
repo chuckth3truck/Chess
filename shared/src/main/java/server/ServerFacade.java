@@ -69,8 +69,8 @@ public class ServerFacade {
 
     public void playGame(int gameNumber, String color, String auth) throws Exception {
         JsonObject body = new JsonObject();
-        body.addProperty("gameNumber", gameNumber);
-        body.addProperty("color", color);
+        body.addProperty("gameID", gameNumber);
+        body.addProperty("playerColor", color);
 
         makeRequest("PUT", "/game", body, JsonObject.class, auth);
     }

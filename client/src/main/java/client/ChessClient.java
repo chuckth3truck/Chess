@@ -1,6 +1,8 @@
 package client;
 import java.lang.module.ResolutionException;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 import exception.ResponseException;
@@ -17,7 +19,7 @@ public class ChessClient {
     private static boolean isLoggedIn = false;
     private static AuthData auth = null;
     private static final ServerFacade serverFacade = new ServerFacade("http://localhost:8080");
-    private static GameData[] gamesList;
+    private static HashMap<Integer,GameData> gamesList = new HashMap<>();
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -56,11 +58,14 @@ public class ChessClient {
     }
 
     private static void displayPostloginUI(Scanner scanner) {
-        System.out.println("Available commands: Help, Logout, Create Game, List Games, Play Game, Observe Game");
+        System.out.println("Available commands: Help, Logout, Create Game, List Games, Play Game, Observe Game, Clear");
         System.out.print("[LOGGED IN] >>> ");
         String command = scanner.nextLine().trim().toLowerCase();
 
         switch (command) {
+            case "clear":
+                handleClearData();
+                break;
             case "help":
                 displayHelp();
                 break;
@@ -161,12 +166,29 @@ public class ChessClient {
         }
     }
 
+    private static void updateGamesList(Integer gameId) throws ResponseException{
+        GameData[] games = serverFacade.listGames(auth.authToken());
+
+        if (gameId != null){
+            gamesList.remove(gameId);
+        }
+
+        for (GameData game : games){
+            if (!gamesList.containsKey(game.gameID())){
+                gamesList.put(game.gameID(), game);
+            }
+        }
+
+    }
+
     private static void handleListGames() {
         try {
-            gamesList = serverFacade.listGames(auth.authToken());
+            updateGamesList(null);
             System.out.println("Available games:\n" );
-            for (GameData game: gamesList){
-                System.out.println(game.gameID() + ", " + game.gameName() + ", WHITE: " + game.whiteUsername()
+            for (Map.Entry<Integer, GameData> entry: gamesList.entrySet()){
+                GameData game = entry.getValue();
+
+                System.out.println("[" + game.gameID()%10 + "] " + game.gameName() + ", WHITE: " + game.whiteUsername()
                         + ", BLACK: " + game.blackUsername() + "\n");
             }
         } catch (Exception e) {
@@ -177,12 +199,18 @@ public class ChessClient {
 
     private static void handlePlayGame(Scanner scanner) {
         System.out.print("Enter game number: ");
-        int gameNumber = Integer.parseInt(scanner.nextLine().trim());
+        int gameNumber = Integer.parseInt(scanner.nextLine().trim()) + 100;
         System.out.print("Enter color (white/black): ");
         String color = scanner.nextLine().trim().toLowerCase();
 
+        if (!gamesList.containsKey(gameNumber) && !gamesList.isEmpty()){
+            System.out.println(gameNumber + " is not a valid game Number");
+            return;
+        }
+
         try {
             serverFacade.playGame(gameNumber, color, auth.authToken());
+            updateGamesList(gameNumber);
             drawChessBoard(color.equals("white"));
         } catch (Exception e) {
             System.out.println("Failed to join game: " + e.getMessage());
@@ -198,6 +226,16 @@ public class ChessClient {
             drawChessBoard(true); // Observing as white perspective by default
         } catch (Exception e) {
             System.out.println("Failed to observe game: " + e.getMessage());
+        }
+    }
+
+    private static void handleClearData(){
+        try {
+            serverFacade.clearData();
+            System.out.println("DataBase Cleared");
+        }
+        catch (Exception e){
+            System.out.println("Failed to Clear data: " + e.getMessage());
         }
     }
 
