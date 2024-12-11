@@ -61,14 +61,11 @@ public class ChessClient {
     }
 
     private static void displayPostLoginUI(Scanner scanner) {
-        System.out.println("Available commands: Help, Logout, Create Game, List Games, Play Game, Observe Game, Clear");
+        System.out.println("Available commands: Help, Logout, Create Game, List Games, Play Game, Observe Game");
         System.out.print("[LOGGED IN] >>> ");
         String command = scanner.nextLine().trim().toLowerCase();
 
         switch (command) {
-            case "clear":
-                handleClearData();
-                break;
             case "help":
                 displayHelp();
                 break;
@@ -257,16 +254,6 @@ public class ChessClient {
             drawChessBoard(gamesList.get(gameNumber).game().getBoard(), false); // Observing as white perspective by default
         } catch (Exception e) {
             System.out.println("Failed to observe game: " + e.getMessage());
-        }
-    }
-
-    private static void handleClearData(){
-        try {
-            serverFacade.clearData();
-            System.out.println("DataBase Cleared");
-        }
-        catch (Exception e){
-            System.out.println("Failed to Clear data: " + e.getMessage());
         }
     }
 

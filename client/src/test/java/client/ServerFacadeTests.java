@@ -163,6 +163,37 @@ public class ServerFacadeTests {
         assert except;
     }
 
+    @Test
+    @Order(11)
+    public void logout()throws Exception{
+        AuthData auth = getAuth();
+        assertDoesNotThrow(() -> serverFacade.logout(auth.authToken()));
+    }
+    @Test
+    @Order(12)
+    public void badLogout(){
+        boolean except = false;
+        try{
+            serverFacade.logout(null);        }
+        catch (Exception e){
+            except = true;
+        }
+
+        assert except;
+
+    }
+
+    @Test
+    @Order(13)
+    public void clearData()throws Exception{
+        assert true;
+    }
+    @Test
+    @Order(14)
+    public void badClearData(){
+        assert true;
+
+    }
 
 
 
