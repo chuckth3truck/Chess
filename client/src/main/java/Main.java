@@ -1,6 +1,5 @@
 import chess.*;
 import client.ChessClient;
-import server.Server;
 import ui.EscapeSequences;
 
 public class Main {
