@@ -221,7 +221,14 @@ public class ChessClient {
 
     private static void handlePlayGame(Scanner scanner) {
         System.out.print("Enter game number: ");
-        int gameNumber = Integer.parseInt(scanner.nextLine().trim()) + 100;
+        int gameNumber;
+        try {
+            gameNumber = Integer.parseInt(scanner.nextLine().trim()) + 100;
+        }
+        catch (Exception e){
+            System.out.println("invalid input");
+            return;
+        }
         System.out.print("Enter color (white/black): ");
         String color = scanner.nextLine().trim().toLowerCase();
 
@@ -259,22 +266,24 @@ public class ChessClient {
 
     private static void drawChessBoard(ChessBoard board, boolean isWhite) {
 
+//        mirror horizontally and verticaly for black perspecitive
+
         if (isWhite){
             board.resetBoard();
         }
         else{
             board.resetBlackBoard();
         }
-
-        String columnLabel = EscapeSequences.SET_BG_COLOR_LIGHT_GREY+ EscapeSequences.EMPTY +
-                String.format("%-4s", "A") + String.format("%-3s", "B") + String.format("%-4s", "C")
-                + String.format("%-3s", "D") + String.format("%-4s", "E") + String.format("%-4s", "F")
-                + String.format("%-3s", "G") + String.format("%-4s", "H") + EscapeSequences.RESET_BG_COLOR;
-
+        String columnLabel = getString(isWhite);
 
         System.out.println(columnLabel);
         for (int row = 0; row < 8; row++) {
-            System.out.print((8 - row) + " ");
+            if (!isWhite) {
+                System.out.print((8 - row) + " ");
+            }
+            else{
+                System.out.print((row+1) + " ");
+            }
             for (int col = 0; col < 8; col++) {
                 if ((row + col) % 2 == 0) {
                     System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREEN);
@@ -293,9 +302,32 @@ public class ChessClient {
                     System.out.print(getWBlackPieces(piece));
                 }
             }
-            System.out.println("\u001B[0m" + " " + (8 - row));
+            if (!isWhite) {
+                System.out.println("\u001B[0m" + " " + (8 - row));
+            }
+            else{
+                System.out.println("\u001B[0m" + " " + (row+1));
+            }
         }
         System.out.println(columnLabel);
+    }
+
+    private static String getString(boolean isWhite) {
+        String columnLabel;
+
+        if (isWhite){
+            columnLabel = EscapeSequences.SET_BG_COLOR_LIGHT_GREY+ EscapeSequences.EMPTY +
+                    String.format("%-4s", "H") + String.format("%-3s", "G") + String.format("%-4s", "F")
+                    + String.format("%-3s", "E") + String.format("%-4s", "D") + String.format("%-4s", "C")
+                    + String.format("%-3s", "B") + String.format("%-4s", "A") + EscapeSequences.RESET_BG_COLOR;
+        }
+        else{
+            columnLabel = EscapeSequences.SET_BG_COLOR_LIGHT_GREY+ EscapeSequences.EMPTY +
+                    String.format("%-4s", "A") + String.format("%-3s", "B") + String.format("%-4s", "C")
+                    + String.format("%-3s", "D") + String.format("%-4s", "E") + String.format("%-4s", "F")
+                    + String.format("%-3s", "G") + String.format("%-4s", "H") + EscapeSequences.RESET_BG_COLOR;
+        }
+        return columnLabel;
     }
 
     private static String getWhitePieces(ChessPiece piece){

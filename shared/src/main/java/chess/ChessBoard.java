@@ -62,7 +62,7 @@ public class ChessBoard {
     public void resetBlackBoard() {
         ChessPiece.PieceType[] pieces = new ChessPiece.PieceType[]{ChessPiece.PieceType.ROOK,
                 ChessPiece.PieceType.KNIGHT, ChessPiece.PieceType.BISHOP,
-                ChessPiece.PieceType.QUEEN, ChessPiece.PieceType.KING,
+                ChessPiece.PieceType.KING, ChessPiece.PieceType.QUEEN,
                 ChessPiece.PieceType.BISHOP, ChessPiece.PieceType.KNIGHT, ChessPiece.PieceType.ROOK};
 
         for (int i = 0; i < 8; i++) {
